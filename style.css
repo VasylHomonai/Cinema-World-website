@@ -1,0 +1,72 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f2f2f2;
+    color: #333;
+}
+
+header, footer {
+    background-color: #004466;
+    color: white;
+    text-align: center;
+    padding: 16px;
+}
+
+.background {
+    background-image: url('images/background.jpg');
+    background-size: cover;                         /* Заповнити весь простір блоку */
+    background-position: center;                    /* Центрувати */
+    background-repeat: no-repeat;                   /* Не повторювати */
+    min-height: 200px;                              /* Мінімальна висота для відображення */
+}
+
+footer a {
+  color: white;
+  text-decoration: underline;
+}
+
+main {
+    padding: 32px
+}
+
+.image-row {
+  display: flex;                            /* Вирівнює внутрішні елементи (image-item) в один рядок */
+  justify-content: center;                  /* Центрує рядок горизонтально */
+  gap: 50px;                                /* Відстань між картинками */
+  margin-bottom: 20px;                      /* Відступ до футера від блоку з картинками */
+}
+
+.image-item {
+  max-width: 30%;                           /* Максимальна ширина кожного блоку (щоб 3 картинки помістились в ряд) */
+  text-align: center;                       /* Вирівнює текст і кнопки по центру */
+}
+
+.image-item img {
+  width: 100%;                              /* Картинка займає всю ширину контейнера */
+  height: auto;                             /* Автоматична висота, щоб зберегти пропорції */
+  border-radius: 8px;                       /* Округлені кути картинки */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);    /* Тінь навколо картинки для об’єму */
+}
+
+.caption {
+  margin-top: 24px;                         /* Відступ зверху між картинкою і підписами */
+  font-size: 16px;                          /* Розмір шрифту для тексту */
+  color: #004466;                           /* Колір тексту в тегу p в блоках під картинками */
+}
+
+.image-item button {
+  margin-top: 30px;                         /* Відступ зверху між текстом і кнопкою */
+  padding: 8px 16px;                        /* Внутрішні відступи всередині кнопки (висота і ширина) */
+  background-color: #ff6600;                /* Помаранчевий фон кнопки */
+  border: 1px solid #004466;                /* Бордер кнопок обведений кольором тексту */
+  border-radius: 5px;                       /* Округлені кути кнопки */
+  color: white;                             /* Білий колір тексту кнопки */
+  cursor: pointer;                          /* Курсор-палець при наведенні — показує, що це клікабельна кнопка */
+  font-size: 20px;                          /* Розмір шрифту в кнопці */
+  transition: background-color 0.3s ease;   /* Плавна анімація зміни кольору при наведенні */
+}
+
+.image-item button:hover {
+  background-color: #e65500;                /* Темніший помаранчевий фон при наведенні */
+}
