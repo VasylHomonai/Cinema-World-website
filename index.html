@@ -17,6 +17,7 @@
          <div class="image-row">
              <div class="image-item">
                 <img src="images/Пригоди Паддінгтона в Перу.webp" alt="Паддінгтон в Перу" />
+                 <p class="caption">Паддінгтон в Перу</p>
                  <p class="caption">Мультфільм від Canal+</p>
                  <p class="caption">Дата релізу: 16 Січня 2025</p>
                  <p class="caption">Час: 1 год 46 хв</p>
@@ -25,6 +26,7 @@
              </div>
              <div class="image-item">
                 <img src="images/Муфаса Король Лев.webp" alt="Король Лев" />
+                 <p class="caption">Король Лев</p>
                  <p class="caption">Мультфільм від Walt Disney</p>
                  <p class="caption">Дата релізу: 19 Грудня 2024</p>
                  <p class="caption">Час: 2 год</p>
@@ -33,6 +35,7 @@
              </div>
              <div class="image-item">
                 <img src="images/Ваяна 2.webp" alt="Ваяна 2" />
+                 <p class="caption">Ваяна 2</p>
                  <p class="caption">Мультфільм від Walt Disney</p>
                  <p class="caption">Дата релізу: 27 Листопада 2024</p>
                  <p class="caption">Час: 1 год 40 хв</p>
@@ -40,49 +43,53 @@
                  <button>Купити зараз</button>
              </div>
          </div>
+
+        <!-- 🎵 Музичний плеєр -->
+        <section class="music-player">
+          <div class="player">
+            <h2>Музичний плеєр</h2>
+              <div class="player-bg">
+                <audio id="audio" controls>
+                  <source src="media/music.mp3" type="audio/mpeg" />
+                  Ваш браузер не підтримує аудіо.
+                </audio>
+              </div>
+          </div>
+        </section>
     </main>
-
-<!--    <h2>Форма вибору автомобіля</h2>-->
-<!--  <form id="carForm">-->
-<!--    <label for="name">Ім’я:</label><br>-->
-<!--    <input type="text" id="name" name="name" required placeholder="Ваше ім'я"><br><br>-->
-
-<!--    <label>Стать:</label><br>-->
-<!--    <input type="radio" name="gender" value="male" required> Чоловік-->
-<!--    <input type="radio" name="gender" value="female"> Жінка<br><br>-->
-
-<!--    <label for="hobby">Хобі:</label><br>-->
-<!--    <input type="checkbox" name="hobby" value="reading"> Читання-->
-<!--    <input type="checkbox" name="hobby" value="coding"> Програмування<br><br>-->
-
-<!--    <label for="cars">Оберіть авто:</label><br>-->
-<!--    <select name="cars" id="cars">-->
-<!--      <option value="volvo">Volvo</option>-->
-<!--      <option value="saab">Saab</option>-->
-<!--      <optgroup label="German Cars">-->
-<!--        <option value="audi">Audi</option>-->
-<!--        <option value="bmw">BMW</option>-->
-<!--      </optgroup>-->
-<!--    </select><br><br>-->
-
-<!--    <button type="submit">Надіслати</button>-->
-<!--  </form>-->
-
-    <section class="music-player">
-      <div class="player">
-        <h2>Музичний плеєр</h2>
-        <audio id="audio" controls>
-          <source src="music.mp3" type="audio/mpeg" />
-          Ваш браузер не підтримує аудіо.
-        </audio>
-      </div>
-    </section>
 
     <footer>
         <p>&copy; 2025 КіноСвіт. Всі права захищені.</p>
         <p>КіноСвіт — твій провідник у світі фільмів та новинок в кіно.</p>
-        <p>Контакти: <a href="test:info@kinosvit.ua">info@kinosvit.ua</a> | Тел.: +38 (000) 123-45-67</p>
+        <p>Контакти: <a href="mailto:info@kinosvit.ua">info@kinosvit.ua</a> | Тел.: <a href="tel:+380001234567">+38 (000) 123-45-67</a></p>
     </footer>
+
+    <!-- Основне модальне вікно для кнопки "Купити зараз" -->
+    <div class="modal" id="buyModal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Покупка фільму</h3>
+        <h4>Контактна інформація: </h4>
+        <div class="form-group">
+          <input type="text" id="userName" placeholder="Введіть ім’я" required>
+          <label for="userName">Ім’я</label>
+        </div>
+        <div class="form-group">
+          <input type="tel" id="userPhone" placeholder="Введіть номер телефону" required>
+          <label for="userPhone">Телефон</label>
+        </div>
+        <button id="confirmPurchase">Підтвердити покупку</button>
+      </div>
+    </div>
+
+    <!-- Модалка подяки -->
+    <div class="modal" id="thankYouModal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-btn" id="closeThankYou">&times;</span>
+        <h3>Дякуємо!</h3>
+        <p>Для завершення покупки ми зв’яжемося з Вами!</p>
+      </div>
+    </div>
 
 <script src="script.js"></script>
 </body>
