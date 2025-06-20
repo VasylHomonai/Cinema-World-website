@@ -1,9 +1,17 @@
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
-document.querySelectorAll('.image-item button').forEach(btn => {
-  btn.addEventListener('click', () => {
+document.querySelectorAll('.buyNow').forEach(btn => {
+  btn.addEventListener('click', (event) => {
     // Очистити попередні повідомлення про помилки в імпутних полях
     document.getElementById("nameError").textContent = "";
     document.getElementById("phoneError").textContent = "";
+
+    // Знаходимо батьківський .image-item (блок з фільмом)
+    const imageItem = event.target.closest('.image-item');
+    if (!imageItem) return;
+    // Знаходимо назву фільму в цьому блоці
+    const movieTitle = imageItem.querySelector('.title').textContent;
+    // Вставляємо назву в попап
+    document.getElementById('movieTitle').textContent = movieTitle;
     // Відкрити модалку
     document.getElementById('buyModal').style.display = 'block';
   });

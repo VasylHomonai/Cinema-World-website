@@ -17,30 +17,36 @@
          <div class="image-row">
              <div class="image-item">
                 <img src="images/Пригоди Паддінгтона в Перу.webp" alt="Паддінгтон в Перу" />
-                 <p class="caption">Паддінгтон в Перу</p>
+                 <p class="caption title">Паддінгтон в Перу</p>
                  <p class="caption">Мультфільм від Canal+</p>
-                 <p class="caption">Дата релізу: 16 Січня 2025</p>
                  <p class="caption">Час: 1 год 46 хв</p>
                  <p class="caption">Країна: Велика Британія</p>
-                 <button>Купити зараз</button>
+                 <div class="button-group">
+                     <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=ejaQfRIFS_g">🎬 Переглянути трейлер</button>
+                     <button class="buyNow">💸 Купити зараз</button>
+                 </div>
              </div>
              <div class="image-item">
                 <img src="images/Муфаса Король Лев.webp" alt="Король Лев" />
-                 <p class="caption">Король Лев</p>
+                 <p class="caption title">Король Лев</p>
                  <p class="caption">Мультфільм від Walt Disney</p>
-                 <p class="caption">Дата релізу: 19 Грудня 2024</p>
                  <p class="caption">Час: 2 год</p>
                  <p class="caption">Країна: США</p>
-                 <button>Купити зараз</button>
+                 <div class="button-group">
+                     <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=sskQlhJjPU0">🎬 Переглянути трейлер</button>
+                     <button class="buyNow">💸 Купити зараз</button>
+                 </div>
              </div>
              <div class="image-item">
                 <img src="images/Ваяна 2.webp" alt="Ваяна 2" />
-                 <p class="caption">Ваяна 2</p>
+                 <p class="caption title">Ваяна 2</p>
                  <p class="caption">Мультфільм від Walt Disney</p>
-                 <p class="caption">Дата релізу: 27 Листопада 2024</p>
                  <p class="caption">Час: 1 год 40 хв</p>
                  <p class="caption">Країна: США</p>
-                 <button>Купити зараз</button>
+                 <div class="button-group">
+                     <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=YJzkMqpw1_Y">🎬 Переглянути трейлер</button>
+                     <button class="buyNow">💸 Купити зараз</button>
+                 </div>
              </div>
          </div>
 
@@ -70,7 +76,7 @@
       <div class="modal-content">
         <span class="close-btn" id="closeModal">&times;</span>
         <h3>Покупка фільму</h3>
-        <h4>Контактна інформація: </h4>
+        <h4 id="movieTitle">Назва фільму</h4>
         <div class="form-group">
           <input type="text" id="userName" placeholder="Введіть ім’я" required>
           <label for="userName">Ім’я</label>
@@ -94,6 +100,13 @@
       </div>
     </div>
 
-<script src="script.js"></script>
+    <!-- Модалка з відео -->
+    <div id="videoModal">
+      <iframe id="videoFrame" src="" allowfullscreen></iframe>
+      <button id="closeVideo">&times;</button>
+    </div>
+
+<script src="js/main.js"></script>
+<script src="js/modal-video.js"></script>
 </body>
 </html>
