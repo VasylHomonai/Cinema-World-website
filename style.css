@@ -110,6 +110,9 @@ h2 {
 
 .player audio {
   width: 100%;
+  min-width: 300px;
+  max-width: 100%;
+  display: block;
 }
 
 /* Попап кнопки "Купити зараз". Початок */
