@@ -1,6 +1,10 @@
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.image-item button').forEach(btn => {
   btn.addEventListener('click', () => {
+    // Очистити попередні повідомлення про помилки в імпутних полях
+    document.getElementById("nameError").textContent = "";
+    document.getElementById("phoneError").textContent = "";
+    // Відкрити модалку
     document.getElementById('buyModal').style.display = 'block';
   });
 });
@@ -42,19 +46,44 @@ document.querySelectorAll(".form-group input").forEach(input => {
 // При підтвердженні "Підтвердити покупку" — ховаємо форму і показуємо повідомлення подяки
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". Start
 document.getElementById("confirmPurchase").addEventListener("click", () => {
-  // Спочатку запис в консоль
-  const name = document.getElementById('userName').value.trim();
-  const phone = document.getElementById('userPhone').value.trim();
-  console.log("Ім’я користувача:", name || "Не введено");
-  console.log("Телефон:", phone || "Не введено");
-
-  // Очистка полів
+  // Спочатку підготовка для запису в консоль та обробка пустих полів (на помилки)
+  // Отримуємо поля вводу
   const nameInput = document.getElementById("userName");
   const phoneInput = document.getElementById("userPhone");
+  // Значення полів вводу
+  const name = nameInput.value.trim();
+  const phone = phoneInput.value.trim();
+  // Помилки для імпутних полів
+  const nameError = document.getElementById("nameError");
+  const phoneError = document.getElementById("phoneError");
+  // Валідація полів вводу
+  let isValid = true;
+  // Очистити попередні повідомлення
+  nameError.textContent = "";
+  phoneError.textContent = "";
 
+  // Валідація імені
+  if (name === "") {
+    nameError.textContent = "Дане поле обов'язкове для заповнення.";
+    isValid = false;
+  }
+
+  // Валідація телефону
+  if (phone === "") {
+    phoneError.textContent = "Дане поле обов'язкове для заповнення.";
+    isValid = false;
+  }
+
+  // Якщо не валідно — зупинити
+  if (!isValid) return;
+
+  //Логування в консоль
+  console.log("Ім’я користувача:", name);
+  console.log("Телефон:", phone);
+
+  // Очистка полів
   nameInput.value = "";
   phoneInput.value = "";
-
   // Прибрати клас 'not-empty' (щоб лейби сховались)
   nameInput.classList.remove("not-empty");
   phoneInput.classList.remove("not-empty");
