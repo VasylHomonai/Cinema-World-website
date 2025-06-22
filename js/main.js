@@ -74,10 +74,19 @@ const phoneInput = document.getElementById("userPhone");
 const nameError = document.getElementById("nameError");
 const phoneError = document.getElementById("phoneError");
 
-// 🔍 Функція для перевірки поля
-function validateField(input, errorElement) {
-  if (input.value.trim() === "") {
+// Функція перевірки валідності номера
+function isValidPhone(phone) {
+  return /^\+380\d{9}$/.test(phone);
+}
+
+// Кастомна валідація полів
+function validateField(input, errorElement, validator = null, errorMessage = "") {
+  const value = input.value.trim();
+  if (value === "") {
     errorElement.textContent = "Дане поле обов'язкове для заповнення.";
+    return false;
+   } else if (validator && !validator(value)) {
+    errorElement.textContent = errorMessage;
     return false;
   } else {
     errorElement.textContent = "";
@@ -86,14 +95,16 @@ function validateField(input, errorElement) {
 }
 // Вішаємо слухачі на input
 nameInput.addEventListener("input", () => validateField(nameInput, nameError));
-phoneInput.addEventListener("input", () => validateField(phoneInput, phoneError));
+phoneInput.addEventListener("input", () => {
+    validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
+});
 
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
 
   const isNameValid = validateField(nameInput, nameError);
-  const isPhoneValid = validateField(phoneInput, phoneError);
+  const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
 
   // Якщо хоча б одне поле невалідне — зупинити
   if (!isNameValid || !isPhoneValid) return;
@@ -105,9 +116,6 @@ form.addEventListener("submit", (e) => {
   // Очистка полів
   nameInput.value = "";
   phoneInput.value = "";
-  //  прибрати можливі повідомлення про помилку, якщо користувач відкриє форму ще раз.
-//  validateField(nameInput, nameError);
-//  validateField(phoneInput, phoneError);
   // Прибрати клас 'not-empty' (щоб лейби сховались)
   nameInput.classList.remove("not-empty");
   phoneInput.classList.remove("not-empty");
