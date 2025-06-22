@@ -1,10 +1,6 @@
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.buyNow').forEach(btn => {
   btn.addEventListener('click', (event) => {
-    // Очистити попередні повідомлення про помилки в імпутних полях
-    document.getElementById("nameError").textContent = "";
-    document.getElementById("phoneError").textContent = "";
-
     // Знаходимо батьківський .image-item (блок з фільмом)
     const imageItem = event.target.closest('.image-item');
     if (!imageItem) return;
@@ -12,6 +8,20 @@ document.querySelectorAll('.buyNow').forEach(btn => {
     const movieTitle = imageItem.querySelector('.title').textContent;
     // Вставляємо назву в попап
     document.getElementById('movieTitle').textContent = movieTitle;
+
+    // Очищення поля name (на пробіли) при кожному відкритті модалки
+    if (nameInput.value.trim() === "") {
+      nameInput.value = "";
+      nameInput.classList.remove("not-empty");
+      nameError.textContent = "";
+    }
+    // Очищення поля phone (на пробіли) при кожному відкритті модалки
+    if (phoneInput.value.trim() === "") {
+      phoneInput.value = "";
+      phoneInput.classList.remove("not-empty");
+      phoneError.textContent = "";
+    }
+
     // Відкрити модалку
     document.getElementById('buyModal').style.display = 'block';
   });
@@ -53,50 +63,58 @@ document.querySelectorAll(".form-group input").forEach(input => {
 
 // При підтвердженні "Підтвердити покупку" — ховаємо форму і показуємо повідомлення подяки
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". Start
-document.getElementById("confirmPurchase").addEventListener("click", () => {
-  // Спочатку підготовка для запису в консоль та обробка пустих полів (на помилки)
-  // Отримуємо поля вводу
-  const nameInput = document.getElementById("userName");
-  const phoneInput = document.getElementById("userPhone");
-  // Значення полів вводу
-  const name = nameInput.value.trim();
-  const phone = phoneInput.value.trim();
-  // Помилки для імпутних полів
-  const nameError = document.getElementById("nameError");
-  const phoneError = document.getElementById("phoneError");
-  // Валідація полів вводу
-  let isValid = true;
-  // Очистити попередні повідомлення
-  nameError.textContent = "";
-  phoneError.textContent = "";
 
-  // Валідація імені
-  if (name === "") {
-    nameError.textContent = "Дане поле обов'язкове для заповнення.";
-    isValid = false;
+// Спочатку підготовка для запису в консоль та обробка пустих полів (на помилки)
+// Отримуємо форму
+const form = document.getElementById("purchaseForm");
+// Отримуємо поля вводу
+const nameInput = document.getElementById("userName");
+const phoneInput = document.getElementById("userPhone");
+// Помилки для імпутних полів
+const nameError = document.getElementById("nameError");
+const phoneError = document.getElementById("phoneError");
+
+// 🔍 Функція для перевірки поля
+function validateField(input, errorElement) {
+  if (input.value.trim() === "") {
+    errorElement.textContent = "Дане поле обов'язкове для заповнення.";
+    return false;
+  } else {
+    errorElement.textContent = "";
+    return true;
   }
+}
+// Вішаємо слухачі на input
+nameInput.addEventListener("input", () => validateField(nameInput, nameError));
+phoneInput.addEventListener("input", () => validateField(phoneInput, phoneError));
 
-  // Валідація телефону
-  if (phone === "") {
-    phoneError.textContent = "Дане поле обов'язкове для заповнення.";
-    isValid = false;
-  }
+// Обробка сабміту форми
+form.addEventListener("submit", (e) => {
+  e.preventDefault(); // Щоб не перезавантажувалась сторінка
 
-  // Якщо не валідно — зупинити
-  if (!isValid) return;
+  const isNameValid = validateField(nameInput, nameError);
+  const isPhoneValid = validateField(phoneInput, phoneError);
 
-  //Логування в консоль
-  console.log("Ім’я користувача:", name);
-  console.log("Телефон:", phone);
+  // Якщо хоча б одне поле невалідне — зупинити
+  if (!isNameValid || !isPhoneValid) return;
+
+  // Логування в консоль
+  console.log("Ім’я користувача:", nameInput.value.trim());
+  console.log("Телефон:", phoneInput.value.trim());
 
   // Очистка полів
   nameInput.value = "";
   phoneInput.value = "";
+  //  прибрати можливі повідомлення про помилку, якщо користувач відкриє форму ще раз.
+//  validateField(nameInput, nameError);
+//  validateField(phoneInput, phoneError);
   // Прибрати клас 'not-empty' (щоб лейби сховались)
   nameInput.classList.remove("not-empty");
   phoneInput.classList.remove("not-empty");
+  nameError.textContent = "";
+  phoneError.textContent = "";
 
-  // Закриваємо модалку
+  // Закриваємо модалку покупки
   document.getElementById("buyModal").style.display = "none";
 
   // Показуємо подяку
