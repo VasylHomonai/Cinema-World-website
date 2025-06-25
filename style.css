@@ -11,6 +11,7 @@ header, footer {
     color: white;
     text-align: center;
     padding: 16px;
+    position: relative;
 }
 
 footer a {
@@ -79,7 +80,11 @@ main {
 }
 
 .button-group button {
-  width: 268px;             /* Фіксована ширина кнопок */
+  width: 100%;               /* Кнопки займатимуть всю доступну ширину */
+  max-width: 268px;          /* Але не більше 268px */
+  padding: 12px;
+  word-wrap: break-word;     /* Якщо текст довгий — переносити */
+  white-space: normal;       /* Дозволити перенос рядка */
 }
 
 h3 {
@@ -149,24 +154,32 @@ h2 {
 
 /* Попап кнопки "Купити зараз". Початок */
 .modal {
-  display: none; /* приховано за замовчуванням */
+  display: none; /* приховано за замовчуванням на старті*/
   position: fixed;
-  z-index: 999;
+  z-index: 1000;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.6);
+
+  justify-content: center;
+  align-items: center;
+  padding: 20px;                            /* щоб модалка не торкалась країв */
+  box-sizing: border-box;
 }
 
 .modal-content {
   background-color: #fff;
-  margin: 10% auto;
   padding: 30px;
   border-radius: 10px;
   width: 90%;
   max-width: 400px;
+  min-height: 200px;                        /* Мінімальна висота */
+  max-height: 90vh;                         /* Максимум 90% від висоти вікна */
+  overflow-y: auto;                         /* Прокрутка, якщо вміст перевищує висоту */
+  box-sizing: border-box;
   text-align: center;
   position: relative;
 }
@@ -327,3 +340,18 @@ h2 {
 }
 /* Стилі для Модалки відео. Кінець */
 
+
+/*  Кнопка перемикача мови */
+.language-switcher {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.language-switcher select {
+  padding: 6px 8px;
+  font-size: 14px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  cursor: pointer;
+}

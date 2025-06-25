@@ -15,15 +15,14 @@ document.querySelectorAll('.buyNow').forEach(btn => {
       nameInput.classList.remove("not-empty");
       nameError.textContent = "";
     }
-    // Очищення поля phone (на пробіли) при кожному відкритті модалки
+
     if (phoneInput.value.trim() === "") {
-      phoneInput.value = "";
       phoneInput.classList.remove("not-empty");
       phoneError.textContent = "";
     }
 
     // Відкрити модалку
-    document.getElementById('buyModal').style.display = 'block';
+    document.getElementById('buyModal').style.display = 'flex';
   });
 });
 
@@ -70,13 +69,31 @@ const form = document.getElementById("purchaseForm");
 // Отримуємо поля вводу
 const nameInput = document.getElementById("userName");
 const phoneInput = document.getElementById("userPhone");
+const PREFIX = "+380";
 // Помилки для імпутних полів
 const nameError = document.getElementById("nameError");
 const phoneError = document.getElementById("phoneError");
+// перевірка відповідності регулярному виразу для заповнення поля імені
+const namePattern = /^[A-Za-zА-Яа-яІіЇїЄєҐґ'\- ]{1,20}$/;
 
 // Функція перевірки валідності номера
 function isValidPhone(phone) {
   return /^\+380\d{9}$/.test(phone);
+}
+
+// Кастомна валідація поля імені в модалці покупки
+function validateName(value) {
+  return namePattern.test(value);
+}
+
+// Ф-ція для очистки полів модалки
+function resetPurchaseForm() {
+  nameInput.value = "";
+  phoneInput.value = "";
+  nameInput.classList.remove("not-empty");
+  phoneInput.classList.remove("not-empty");
+  nameError.textContent = "";
+  phoneError.textContent = "";
 }
 
 // Кастомна валідація полів
@@ -85,25 +102,64 @@ function validateField(input, errorElement, validator = null, errorMessage = "")
   if (value === "") {
     errorElement.textContent = "Дане поле обов'язкове для заповнення.";
     return false;
-   } else if (validator && !validator(value)) {
+  }
+
+  if (validator && !validator(value)) {
     errorElement.textContent = errorMessage;
     return false;
-  } else {
-    errorElement.textContent = "";
-    return true;
   }
+
+  errorElement.textContent = "";
+  return true;
 }
-// Вішаємо слухачі на input
-nameInput.addEventListener("input", () => validateField(nameInput, nameError));
+
+// Вішаємо слухачі на input поля
+nameInput.addEventListener("input", () => {
+  validateField(nameInput, nameError, validateName, "Ім’я має містити лише літери.");
+});
+
+phoneInput.addEventListener("focus", () => {
+  if (!phoneInput.value.startsWith(PREFIX)) {
+    phoneInput.value = PREFIX;
+  }
+
+  // Ставимо курсор в кінець
+  setTimeout(() => {
+    phoneInput.setSelectionRange(phoneInput.value.length, phoneInput.value.length);
+  });
+});
+
+// Захист від видалення префікса
+phoneInput.addEventListener("keydown", (e) => {
+  const pos = phoneInput.selectionStart;
+
+  // Якщо користувач натискає Backspace або Delete перед префіксом
+  if ((e.key === "Backspace" && pos <= PREFIX.length) ||
+      (e.key === "Delete" && pos < PREFIX.length)) {
+    e.preventDefault();
+  }
+});
+
 phoneInput.addEventListener("input", () => {
-    validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
+  let value = phoneInput.value;
+
+  // Гарантуємо, що значення завжди починається з +380
+  if (!value.startsWith(PREFIX)) {
+    value = PREFIX + value.replace(/\D/g, "");
+  }
+
+  // Видаляємо все, крім цифр після +380
+  const digits = value.slice(PREFIX.length).replace(/\D/g, "").slice(0, 9);
+
+  phoneInput.value = PREFIX + digits;
+  validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
 });
 
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
 
-  const isNameValid = validateField(nameInput, nameError);
+  const isNameValid = validateField(nameInput, nameError, validateName, "Ім’я має містити лише літери.");
   const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
 
   // Якщо хоча б одне поле невалідне — зупинити
@@ -114,19 +170,13 @@ form.addEventListener("submit", (e) => {
   console.log("Телефон:", phoneInput.value.trim());
 
   // Очистка полів
-  nameInput.value = "";
-  phoneInput.value = "";
-  // Прибрати клас 'not-empty' (щоб лейби сховались)
-  nameInput.classList.remove("not-empty");
-  phoneInput.classList.remove("not-empty");
-  nameError.textContent = "";
-  phoneError.textContent = "";
+  resetPurchaseForm();
 
   // Закриваємо модалку покупки
   document.getElementById("buyModal").style.display = "none";
 
   // Показуємо подяку
-  document.getElementById("thankYouModal").style.display = "block";
+  document.getElementById("thankYouModal").style.display = "flex";
 });
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". End
 
