@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KinoSvit</title>
+    <link rel="icon" type="image/x-icon" href="images/favicon.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <!-- Кнопка перемикача мови -->
+        <div class="language-switcher">
+            <select id="switchLang">
+              <option value="ua">UA</option>
+              <option value="en" selected>EN</option>
+            </select>
+        </div>
+
+        <h1>Kino Svit</h1>
+        <p class="tagline">Buy your favorite movie at KinoSvit!</p>
+    </header>
+    <div class="background"></div>
+
+    <main>
+         <div class="image-row">
+             <div class="image-item">
+                <img src="images/Пригоди Паддінгтона в Перу.webp" alt="Paddington in Peru" />
+                 <p class="caption title">Paddington in Peru</p>
+                 <p class="caption">Distributed by Canal+</p>
+                 <p class="caption">Time: 1 hour 46 minutes</p>
+                 <p class="caption">Country: United Kingdom</p>
+                 <div class="button-group">
+                     <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=lKgitu25ZAg">🎬 Watch the trailer</button>
+                     <button class="buyNow">💸 Buy now</button>
+                 </div>
+             </div>
+             <div class="image-item">
+                <img src="images/Муфаса Король Лев.webp" alt="The Lion King" />
+                 <p class="caption title">Mufasa: The Lion King</p>
+                 <p class="caption">Distributed by Walt Disney</p>
+                 <p class="caption">Time: 2 hour</p>
+                 <p class="caption">Country: USA</p>
+                 <div class="button-group">
+                     <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=o17MF9vnabg">🎬 Watch the trailer</button>
+                     <button class="buyNow">💸 Buy now</button>
+                 </div>
+             </div>
+             <div class="image-item">
+                <img src="images/Ваяна 2.webp" alt="Moana 2" />
+                 <p class="caption title">Moana 2</p>
+                 <p class="caption">Distributed by Walt Disney</p>
+                 <p class="caption">Time: 1 hour 40 minutes</p>
+                 <p class="caption">Country: USA</p>
+                 <div class="button-group">
+                     <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=hDZ7y8RP5HE">🎬 Watch the trailer</button>
+                     <button class="buyNow">💸 Buy now</button>
+                 </div>
+             </div>
+         </div>
+
+        <!-- 🎵 Музичний плеєр -->
+        <section class="music-player">
+          <div class="player">
+              <div class="player-bg">
+                <audio id="audio" controls>
+                  <source src="media/music.mp3" type="audio/mpeg" />
+                  Your browser does not support audio.
+                </audio>
+              </div>
+          </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 KinoSvit. All rights reserved.</p>
+        <p>KinoSvit — your gateway to movies and the latest cinema hits.</p>
+        <P>Website by Vasyl Homonai</P>
+        <p>Contacts: <a href="mailto:info@kinosvit.ua">info@kinosvit.ua</a> | Tel.: <a href="tel:+380001234567">+38 (000) 123-45-67</a></p>
+    </footer>
+
+    <!-- Основне модальне вікно для кнопки "Купити зараз" -->
+    <div class="modal" id="buyModal">
+      <div class="modal-content">
+        <span class="close-btn" id="closeModal">&times;</span>
+        <h3>Movie Purchase</h3>
+        <h4 id="movieTitle">Movie title</h4>
+        <form id="purchaseForm" novalidate>
+            <div class="form-group">
+              <input type="text" id="userName" name="userName" placeholder="Enter your name" maxlength="20">
+              <label for="userName">Name</label>
+              <small class="error-message" id="nameError"></small>
+            </div>
+            <div class="form-group">
+              <input type="tel" id="userPhone" name="userPhone" placeholder="tel: +380..." pattern="^\+380\d{9}$">
+              <label for="userPhone">Phone</label>
+              <small class="error-message" id="phoneError">Format: +380XXXXXXXXX</small>
+            </div>
+            <button type="submit" id="confirmPurchase">Confirm Purchase</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Модалка подяки -->
+    <div class="modal" id="thankYouModal" style="display: none;">
+      <div class="modal-content">
+        <span class="close-btn" id="closeThankYou">&times;</span>
+        <h3>Thank you!</h3>
+        <p>We'll contact you to complete the purchase.</p>
+      </div>
+    </div>
+
+    <!-- Модалка з відео -->
+    <div id="videoModal">
+      <iframe id="videoFrame" src="" allowfullscreen></iframe>
+      <button id="closeVideo">&times;</button>
+    </div>
+
+<script src="js/main.js" defer></script>
+<script src="js/modal-video.js" defer></script>
+</body>
+</html>

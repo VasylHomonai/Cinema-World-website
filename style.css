@@ -52,7 +52,7 @@ main {
 
 .caption {
   margin-top: 24px;                         /* Відступ зверху між картинкою і підписами */
-  font-size: 16px;                          /* Розмір шрифту для тексту */
+  font-size: clamp(12px, 2vw, 16px);        /* Розмір шрифту для тексту */
   color: #004466;                           /* Колір тексту в тегу p в блоках під картинками */
 }
 
@@ -64,7 +64,7 @@ main {
   border-radius: 5px;                       /* Округлені кути кнопки */
   color: white;                             /* Білий колір тексту кнопки */
   cursor: pointer;                          /* Курсор-палець при наведенні — показує, що це клікабельна кнопка */
-  font-size: 20px;                          /* Розмір шрифту в кнопці */
+  font-size: clamp(12px, 2vw, 20px);        /* Розмір шрифту в кнопці. мін. 10px, максимально 20px*/
   transition: background-color 0.3s ease;   /* Плавна анімація зміни кольору при наведенні */
 }
 
@@ -90,7 +90,7 @@ main {
 h3 {
   color: #5285cc;
   font-weight: bold;
-  font-size: 28px;
+  font-size: clamp(20px, 2vw, 28px);
   margin-bottom: 0;
 }
 
@@ -98,7 +98,7 @@ h3 {
 h4 {
   margin-top: 16px;
   margin-bottom: 16px;
-  font-size: 24px;
+  font-size: clamp(16px, 2vw, 24px);
   font-weight: bold;
   color: #e65500; /* яскраво-помаранчевий акцент */
   text-align: center;
@@ -122,11 +122,7 @@ h4 {
   border-radius: 20px;
 }
 
-h2 {
-  text-align: center;
-  margin-top: 40px;
-  color: #ff6600;
-}
+
 
 .player {
   background-color: #222;
@@ -188,7 +184,7 @@ h2 {
 .modal-content button {
   margin-top: 32px;                         /* Відступ зовніщній зверху від поля "Введіть номер телефону" і кнопкою */
   padding: 8px 16px;                        /* Внутрішні відступи всередині кнопки (висота і ширина) */
-  font-size: 20px;                          /* Розмір шрифту в кнопці */
+  font-size: clamp(12px, 2vw, 20px);        /* Розмір шрифту в кнопці */
   background-color: #ff6600;                /* Помаранчевий фон кнопки */
   border: 1.5px solid #004466;              /* Бордер кнопки обведений кольором тексту */
   border-radius: 6px;                       /* Округлені кути кнопки */
@@ -211,8 +207,8 @@ h2 {
 .form-group input {
   width: 90%;                               /* ширина поля в відносно попапа */
   padding: 12px 10px;                       /* Внутрішні відступи всередині input (висота і ширина) */
-  margin: 2px 0;                           /* Відступ зовніщній, 12px зверху і знизу, 0 зліва і справа. */
-  font-size: 16px;                          /* Розмір шрифту в полі */
+  margin: 2px 0;                            /* Відступ зовніщній, 12px зверху і знизу, 0 зліва і справа. */
+  font-size: clamp(10px, 2vw, 16px);        /* Розмір шрифту в полі */
   border: 1px solid #5285cc;                /* Бордер поля обведений кольором */
   border-radius: 6px;                       /* Округлені кути поля */
 }
@@ -341,7 +337,7 @@ h2 {
 /* Стилі для Модалки відео. Кінець */
 
 
-/*  Кнопка перемикача мови */
+/*  Кнопка перемикача мови. Початок */
 .language-switcher {
   position: absolute;
   top: 10px;
@@ -349,9 +345,15 @@ h2 {
 }
 
 .language-switcher select {
-  padding: 6px 8px;
+  padding: 6px 6px;
   font-size: 14px;
   border-radius: 10px;
-  border: 1px solid #ccc;
+  border: 2px solid #ff6600;
   cursor: pointer;
 }
+
+.language-switcher option {
+  background-color: yellow;
+  color: black;
+}
+/*  Кнопка перемикача мови. Кінець */

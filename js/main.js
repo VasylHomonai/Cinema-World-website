@@ -100,7 +100,7 @@ function resetPurchaseForm() {
 function validateField(input, errorElement, validator = null, errorMessage = "") {
   const value = input.value.trim();
   if (value === "") {
-    errorElement.textContent = "Дане поле обов'язкове для заповнення.";
+    errorElement.textContent = translations[currentLang].required;
     return false;
   }
 
@@ -115,7 +115,8 @@ function validateField(input, errorElement, validator = null, errorMessage = "")
 
 // Вішаємо слухачі на input поля
 nameInput.addEventListener("input", () => {
-  validateField(nameInput, nameError, validateName, "Ім’я має містити лише літери.");
+//  validateField(nameInput, nameError, validateName, "Ім’я має містити лише літери.");
+  validateField(nameInput, nameError, validateName, translations[currentLang].nameInvalid);
 });
 
 phoneInput.addEventListener("focus", () => {
@@ -152,15 +153,15 @@ phoneInput.addEventListener("input", () => {
   const digits = value.slice(PREFIX.length).replace(/\D/g, "").slice(0, 9);
 
   phoneInput.value = PREFIX + digits;
-  validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
+  validateField(phoneInput, phoneError, isValidPhone, translations[currentLang].phoneInvalid);
 });
 
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
 
-  const isNameValid = validateField(nameInput, nameError, validateName, "Ім’я має містити лише літери.");
-  const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, "Номер має бути у форматі +380XXXXXXXXX");
+  const isNameValid = validateField(nameInput, nameError, validateName, translations[currentLang].nameInvalid);
+  const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, translations[currentLang].phoneInvalid);
 
   // Якщо хоча б одне поле невалідне — зупинити
   if (!isNameValid || !isPhoneValid) return;
@@ -185,3 +186,37 @@ form.addEventListener("submit", (e) => {
 document.getElementById("closeThankYou").addEventListener('click', () => {
   document.getElementById('thankYouModal').style.display = 'none';              // Закриоває модальне вікно подяки, змінюючи стиль display на none.
 });
+
+// Для переключалки сайту на іншу мову
+const langSwitcher = document.getElementById("switchLang");
+
+langSwitcher.addEventListener("change", () => {
+  const selectedLang = langSwitcher.value;
+
+  if (selectedLang === "ua") {
+    window.location.href = "index-ua.html";
+  } else if (selectedLang === "en") {
+    window.location.href = "index-en.html";
+  }
+});
+
+// Для перекладу валідацій на різні мови. Початок
+const translations = {
+  ua: {
+    required: "Дане поле обов'язкове для заповнення.",
+    nameInvalid: "Ім’я має містити лише літери.",
+    phoneInvalid: "Номер має бути у форматі +380XXXXXXXXX",
+  },
+  en: {
+    required: "This field is required.",
+    nameInvalid: "Name must contain only letters.",
+    phoneInvalid: "Format: +380XXXXXXXXX",
+  }
+};
+
+let currentLang = document.getElementById("switchLang").value;
+
+document.getElementById("switchLang").addEventListener("change", (e) => {
+  currentLang = e.target.value;
+});
+// Для перекладу валідацій на різні мови. Кінець.
