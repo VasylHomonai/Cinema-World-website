@@ -194,7 +194,7 @@ langSwitcher.addEventListener("change", () => {
   const selectedLang = langSwitcher.value;
 
   if (selectedLang === "ua") {
-    window.location.href = "index-ua.html";
+    window.location.href = "index.html";
   } else if (selectedLang === "en") {
     window.location.href = "index-en.html";
   }
