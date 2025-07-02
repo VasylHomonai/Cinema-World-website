@@ -5,7 +5,7 @@ document.querySelectorAll('.buyNow').forEach(btn => {
     const imageItem = event.target.closest('.image-item');
     if (!imageItem) return;
     // Знаходимо назву фільму в цьому блоці
-    const movieTitle = imageItem.querySelector('.title').textContent;
+    movieTitle = imageItem.querySelector('.title').textContent;
     // Вставляємо назву в попап
     document.getElementById('movieTitle').textContent = movieTitle;
 
@@ -75,6 +75,8 @@ const nameError = document.getElementById("nameError");
 const phoneError = document.getElementById("phoneError");
 // перевірка відповідності регулярному виразу для заповнення поля імені
 const namePattern = /^[A-Za-zА-Яа-яІіЇїЄєҐґ'\- ]{1,20}$/;
+// Змінна для назви фільму який купляється
+let selectedMovieTitle = "";
 
 // Функція перевірки валідності номера
 function isValidPhone(phone) {
@@ -169,6 +171,7 @@ form.addEventListener("submit", (e) => {
   // Логування в консоль
   console.log("Ім’я користувача:", nameInput.value.trim());
   console.log("Телефон:", phoneInput.value.trim());
+  console.log("Фільм:", movieTitle.trim());
 
   // Очистка полів
   resetPurchaseForm();
