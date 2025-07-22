@@ -39,6 +39,27 @@ window.addEventListener('click', (e) => {
     document.getElementById('thankYouModal').style.display = 'none';
   }
 });
+
+// Зміна кольору кнопки "💸 Купити зараз" на зелений при кожному 2-му кліку
+document.querySelectorAll('.buyNow').forEach(button => {
+    const id = button.dataset.id;
+
+    // При завантаженні сторінки — перевіряємо збережений стан
+    if (localStorage.getItem(id) === 'clicked') {
+      button.classList.add('clicked');
+    }
+
+    // Обробка кліку
+    button.addEventListener('click', () => {
+        if (button.classList.contains('clicked')) {
+          button.classList.remove('clicked');
+          localStorage.removeItem(id);
+        } else {
+          button.classList.add('clicked');
+          localStorage.setItem(id, 'clicked');
+        }
+  });
+});
 // Клік кнопки "Купити зараз". Кінець
 
 

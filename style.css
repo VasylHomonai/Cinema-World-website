@@ -72,6 +72,16 @@ main {
   background-color: #e65500;                /* Темніший помаранчевий фон при наведенні */
 }
 
+/* Зміна кольору кнопки "💸 Купити зараз" на зелений при кожному 2-му кліку */
+button.buyNow.clicked {
+  background-color: #4CAF50;     /* Зелений фон */
+  border-color: #1e7e34;                    /* Зелена рамка */
+}
+
+button.buyNow.clicked:hover {
+  background-color: #43a047;                /* Темніший зелений при наведенні */
+}
+
 .button-group {
   display: flex;            /* Вмикаємо flex-контейнер */
   flex-direction: column;   /* Вертикальне розташування кнопок */
