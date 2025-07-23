@@ -1,3 +1,5 @@
+import { updateCartState } from './cart.js';
+
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.buyNow').forEach(btn => {
   btn.addEventListener('click', (event) => {
@@ -58,6 +60,8 @@ document.querySelectorAll('.buyNow').forEach(button => {
           button.classList.add('clicked');
           localStorage.setItem(id, 'clicked');
         }
+
+        updateCartState(); // оновлюємо відображення кошика
   });
 });
 // Клік кнопки "Купити зараз". Кінець
@@ -193,6 +197,20 @@ form.addEventListener("submit", (e) => {
   console.log("Ім’я користувача:", nameInput.value.trim());
   console.log("Телефон:", phoneInput.value.trim());
   console.log("Фільм:", movieTitle.trim());
+
+  // Очищаємо всі покупки (стан кнопок і localStorage)
+  document.querySelectorAll(".buyNow").forEach(button => {
+    const id = button.dataset.id;
+
+    // Якщо кнопка була у стані "clicked", очищаємо
+    if (localStorage.getItem(id) === 'clicked') {
+      button.classList.remove("clicked");
+      localStorage.removeItem(id);
+    }
+  });
+
+  // Оновити корзину
+  updateCartState();
 
   // Очистка полів
   resetPurchaseForm();
