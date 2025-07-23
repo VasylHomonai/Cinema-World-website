@@ -211,19 +211,6 @@ document.getElementById("closeThankYou").addEventListener('click', () => {
   document.getElementById('thankYouModal').style.display = 'none';              // Закриоває модальне вікно подяки, змінюючи стиль display на none.
 });
 
-// Для переключалки сайту на іншу мову
-const langSwitcher = document.getElementById("switchLang");
-
-langSwitcher.addEventListener("change", () => {
-  const selectedLang = langSwitcher.value;
-
-  if (selectedLang === "ua") {
-    window.location.href = "index.html";
-  } else if (selectedLang === "en") {
-    window.location.href = "index-en.html";
-  }
-});
-
 // Для перекладу валідацій на різні мови. Початок
 const translations = {
   ua: {
