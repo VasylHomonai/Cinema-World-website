@@ -7,9 +7,9 @@ document.querySelectorAll('.buyNow').forEach(btn => {
     const imageItem = event.target.closest('.image-item');
     if (!imageItem) return;
     // Знаходимо назву фільму в цьому блоці
-    movieTitle = imageItem.querySelector('.title').textContent;
+    selectedMovieTitle = imageItem.querySelector('.title').textContent;
     // Вставляємо назву в попап
-    document.getElementById('movieTitle').textContent = movieTitle;
+    document.getElementById('movieTitle').textContent = selectedMovieTitle;
 
     // Очищення поля name (на пробіли) при кожному відкритті модалки
     if (nameInput.value.trim() === "") {
@@ -196,7 +196,7 @@ form.addEventListener("submit", (e) => {
   // Логування в консоль
   console.log("Ім’я користувача:", nameInput.value.trim());
   console.log("Телефон:", phoneInput.value.trim());
-  console.log("Фільм:", movieTitle.trim());
+  console.log("Фільм:", selectedMovieTitle.trim());
 
   // Очищаємо всі покупки (стан кнопок і localStorage)
   document.querySelectorAll(".buyNow").forEach(button => {
