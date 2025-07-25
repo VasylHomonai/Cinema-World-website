@@ -95,7 +95,10 @@ button.buyNow.clicked:hover {
   display: flex;            /* Вмикаємо flex-контейнер */
   flex-direction: column;   /* Вертикальне розташування кнопок */
   align-items: center;      /* Центруємо кнопки по горизонталі */
-  gap: 1px;                /* Відстань між кнопками */
+  gap: 1px;                 /* Відстань між кнопками */
+  width: 100%;
+  max-width: 260px;         /* Потрібно ще буде доробити довжину кнопки Купити на розширеннях більше 450px */
+  margin: 0 auto;
 }
 
 .button-group button {
@@ -405,3 +408,44 @@ h4 {
   display: none; /* буде видно лише коли > 0 */
 }
 /*  Кнопка корзини. Кінець */
+
+/* Кнопки ціна та купити. Початок */
+.buy-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  width: 100%;              /* Займає всю ширину .image-item */
+  margin: 0 auto;           /* Центрує блок */
+  gap: 8px;
+}
+
+.price {
+  color: #004466;
+  font-weight: bold;
+  font-size: clamp(14px, 2vw, 20px);
+  white-space: nowrap;
+}
+
+@media (max-width: 509px) {
+  .buy-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* ціна й кнопка вирівняні по лівому краю */
+    gap: 8px;
+  }
+
+  .button-group {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .image-item button {
+    margin-top: 0;
+  }
+
+  .price {
+    margin-top: 12px;
+    align-self: baseline; /* робить ціну незалежною від вирівнювання решти */
+  }
+}
+/* Кнопки ціна та купити. Кінець */
