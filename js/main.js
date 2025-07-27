@@ -1,4 +1,8 @@
 import { updateCartState } from './cart.js';
+// import { t } from './localization/i18n.js';
+import { initApp } from './init-app.js';
+
+await initApp();
 
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.buyNow').forEach(btn => {

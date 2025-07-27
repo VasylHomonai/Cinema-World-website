@@ -1,0 +1,5 @@
+{
+  "_comment_cart": "Тексти для тултипу корзини",
+  "cart.tooltip.empty": "Your cart is empty.",
+  "cart.tooltip.notempty": "Go to cart to\ncomplete your purchase."
+}
