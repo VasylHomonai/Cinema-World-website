@@ -9,16 +9,26 @@ try {
    console.error("Помилка ініціалізації застосунку:", error);
 }
 
-/* Перевірка мови браузера при першому заході (в локальному сховищі немає параметра langDetected)
-Якщо параметр langDetected немає, то підгружається мова сайту відносно умови: 'uk' || 'ru' => 'uk' версія сайту
+// Функції для роботи з cookies
+function setCookie(name, value, maxAgeSeconds = 3153600000) {
+  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; samesite=lax`;
+}
+
+export function getCookie(name) {
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : null;
+}
+
+/* Перевірка мови браузера при першому заході (в куках немає параметра langDetected)
+Якщо параметр langDetected немає, то підгружається мова сайту відносно умови: 'uk' || 'ru' => 'ua' версія сайту
 Всі інші мови => 'en' версія сайту
 Якщо параметр langDetected є, то залежно від значення його, підгрузиться відповідна версія сайту. */
 (function detectLangOnFirstVisit() {
   try {
-      const storedLang = localStorage.getItem('langDetected');
-      const currentLang = window.location.href.includes("-en") ? "en" : "uk";
+      const storedLang = getCookie('langDetected');
+      const currentLang = window.location.href.includes("-en") ? "en" : "ua";
 
-      // Якщо мова збережена в локальному сховищі, але поточна не відповідає їй
+      // Якщо мова збережена в куках, але поточна не відповідає їй
       if (storedLang && storedLang !== currentLang) {
         const targetUrl = storedLang === "en" ? "index-en.html" : "index.html";
         if (!window.location.href.includes(targetUrl)) {
@@ -29,10 +39,12 @@ try {
 
       // Якщо мова ще не визначена(перший вхід), то визначити за navigator.language
       if (!storedLang) {
-        const browserLang = navigator.language.startsWith("uk") ? "uk" : "en";
-        localStorage.setItem("langDetected", browserLang);
-
+        const userLang = navigator.language || navigator.userLanguage;
+        const isUkrainian = userLang.startsWith("uk") || userLang.startsWith("ru");
+        const browserLang = isUkrainian ? "ua" : "en";
         const targetUrl = browserLang === "en" ? "index-en.html" : "index.html";
+        setCookie("langDetected", browserLang);
+
         if (!window.location.href.includes(targetUrl)) {
           window.location.href = targetUrl;
         }
@@ -50,10 +62,10 @@ if (langSwitcher) {
 
           // Зберігаємо мову в localStorage перед переходом
           if (selectedLang === "ua") {
-            localStorage.setItem('langDetected', 'ua');
+            setCookie('langDetected', 'ua');
             window.location.href = "index.html";
           } else if (selectedLang === "en") {
-            localStorage.setItem('langDetected', 'en');
+            setCookie('langDetected', 'en');
             window.location.href = "index-en.html";
           }
       });

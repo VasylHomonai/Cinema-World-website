@@ -49,24 +49,31 @@ window.addEventListener('click', (e) => {
 // Зміна кольору кнопки "💸 Купити зараз" на зелений при кожному 2-му кліку
 document.querySelectorAll('.buyNow').forEach(button => {
     const id = button.dataset.id;
+    const cookieKey = `cart_button_${id}`;
 
-    // При завантаженні сторінки — перевіряємо збережений стан
-    if (localStorage.getItem(id) === 'clicked') {
-      button.classList.add('clicked');
+    // При завантаженні сторінки — перевіряємо збережений стан з cookie
+    const cookies = document.cookie.split(';');
+    const isClicked = cookies.some(cookie => {
+        const [key, value] = cookie.trim().split('=');
+        return key === cookieKey && value === 'clicked';
+    });
+
+    if (isClicked) {
+        button.classList.add('clicked');
     }
 
     // Обробка кліку
     button.addEventListener('click', () => {
         if (button.classList.contains('clicked')) {
-          button.classList.remove('clicked');
-          localStorage.removeItem(id);
+            button.classList.remove('clicked');
+            document.cookie = `${cookieKey}=; max-age=0; path=/;`;
         } else {
-          button.classList.add('clicked');
-          localStorage.setItem(id, 'clicked');
+            button.classList.add('clicked');
+            document.cookie = `${cookieKey}=clicked; max-age=3153600000; path=/;`;
         }
 
         updateCartState(); // оновлюємо відображення кошика
-  });
+    });
 });
 // Клік кнопки "Купити зараз". Кінець
 
@@ -187,6 +194,18 @@ phoneInput.addEventListener("input", () => {
   validateField(phoneInput, phoneError, isValidPhone, translations[currentLang].phoneInvalid);
 });
 
+// Функція для отримання cookie за ім'ям
+function getCookie(name) {
+  const cookies = document.cookie.split(';');
+  for (const cookie of cookies) {
+    const [key, value] = cookie.trim().split('=');
+    if (key === name) {
+      return value;
+    }
+  }
+  return null;
+}
+
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
@@ -202,14 +221,16 @@ form.addEventListener("submit", (e) => {
   console.log("Телефон:", phoneInput.value.trim());
   console.log("Фільм:", selectedMovieTitle.trim());
 
-  // Очищаємо всі покупки (стан кнопок і localStorage)
+  // Очищаємо всі покупки (стан кнопок і Куки)
   document.querySelectorAll(".buyNow").forEach(button => {
     const id = button.dataset.id;
+    const cookieKey = `cart_button_${id}`;
 
     // Якщо кнопка була у стані "clicked", очищаємо
-    if (localStorage.getItem(id) === 'clicked') {
-      button.classList.remove("clicked");
-      localStorage.removeItem(id);
+    if (getCookie(cookieKey) === 'clicked') {
+      button.classList.remove('clicked');
+      // Для видалення cookie ставимо max-age=0
+      document.cookie = `${cookieKey}=; max-age=0; path=/;`;
     }
   });
 

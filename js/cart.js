@@ -1,5 +1,6 @@
 import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
+import { getCookie } from './language-switcher.js';
 
 const cartButton = document.getElementById("cartButton");
 const cartImg = document.getElementById("cartImage");
@@ -19,24 +20,25 @@ async function initCart() {
 }
 
 function handleCartClick() {
-  const lang = localStorage.getItem("langDetected");
+  const lang = getCookie("langDetected");
   alert(lang === "ua" ? "🛒 Корзина в процесі розробки!" : "🛒 Cart under development!");
 }
 
-document.addEventListener("DOMContentLoaded", initCart);
+initCart();
 
 export function updateCartState() {
   let count = 0;
+  const cookies = document.cookie.split(';');
 
-  for (let key in localStorage) {
-    if (localStorage.hasOwnProperty(key) && key.startsWith("button")) {
-      if (localStorage.getItem(key) === "clicked") {
-        count++;
-      }
+  for (const cookie of cookies) {
+    const [key, value] = cookie.trim().split('=');
+
+    if (key.startsWith("cart_button_") && value === "clicked") {
+      count++;
     }
   }
 
-  // Зміна картинки
+  // Зміна картинки та тултипа
   try {
       if (count > 0) {
         cartImg.src = "images/cart-icon-2.png";

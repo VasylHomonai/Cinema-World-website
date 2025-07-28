@@ -1,9 +1,15 @@
+import { getCookie } from '../language-switcher.js';
+
 let translations = {};
-let currentLang = localStorage.getItem("langDetected") || 'ua';
+let currentLang = getCookie("langDetected") || 'ua';
 
 export async function loadTranslations() {
-  const response = await fetch(`locales/${currentLang}.json`);
-  translations = await response.json();
+  try {
+      const response = await fetch(`locales/${currentLang}.json`);
+      translations = await response.json();
+  } catch (error) {
+    console.error(`Не вдалося завантажити файл перекладу для мови "${currentLang}"`, error);
+  }
 }
 
 export function t(key) {
