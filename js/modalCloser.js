@@ -1,3 +1,25 @@
+const state = {
+  removeBuyClickOutsideListener: null,
+  removeCartClickOutsideListener: null,
+  removeThanksClickOutsideListener: null,
+};
+
+export function getState() {
+  return state;
+}
+
+export function setRemoveBuyClickOutsideListener(listener) {
+  state.removeBuyClickOutsideListener = listener;
+}
+
+export function setRemoveCartClickOutsideListener(listener) {
+  state.removeCartClickOutsideListener = listener;
+}
+
+export function setRemoveThanksClickOutsideListener(listener) {
+  state.removeThanksClickOutsideListener = listener;
+}
+
 export function enableModalCloseOnOutsideClick(wrapperId, contentSelector) {
   const wrapper = document.getElementById(wrapperId);
   const content = wrapper.querySelector(contentSelector);

@@ -1,9 +1,15 @@
 import { updateCartState } from './cart.js';
 // import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
-import { enableModalCloseOnOutsideClick } from './modalCloser.js';
+import {
+  getState,
+  setRemoveBuyClickOutsideListener,
+  setRemoveThanksClickOutsideListener,
+  enableModalCloseOnOutsideClick,
+} from './modalCloser.js';
 
-let removeCartClickOutsideListener;
+// Доступ до об'єкту state в якій змінні: removeThanksClickOutsideListener та removeBuyClickOutsideListener:
+const state = getState();
 
 await initApp();
 
@@ -31,23 +37,25 @@ document.querySelectorAll('.buyNow').forEach(btn => {
     }
 
     // Відкрити модалку
-    document.getElementById('buyModal').style.display = 'flex';
+    document.getElementById("buyModal").style.display = 'flex';
 
     // Якщо вже був слухач для попапу — знімаємо
-     if (typeof removeCartClickOutsideListener === 'function') {
-       removeCartClickOutsideListener();
+     if (typeof state.removeBuyClickOutsideListener === 'function') {
+       state.removeBuyClickOutsideListener();
      }
 
     // Закриття по кліку поза вікном попапа. Вішається слухач у момент відкриття попапу.
-    removeCartClickOutsideListener = enableModalCloseOnOutsideClick('buyModal', '#buyModalContent');
+    setRemoveBuyClickOutsideListener(
+      enableModalCloseOnOutsideClick('buyModal', '#buyModalContent')
+    );
   });
 });
 
 // Закриваємо попап покупки
 document.getElementById('closeModal').addEventListener('click', () => {
   document.getElementById('buyModal').style.display = 'none';
-  if (typeof removeCartClickOutsideListener === 'function') {
-    removeCartClickOutsideListener();
+  if (typeof state.removeBuyClickOutsideListener === 'function') {
+    state.removeBuyClickOutsideListener();
   }
 });
 
@@ -252,12 +260,14 @@ form.addEventListener("submit", (e) => {
   document.getElementById("thankYouModal").style.display = "flex";
 
   // Якщо вже був слухач для попапу — знімаємо
-  if (typeof removeCartClickOutsideListener === 'function') {
-    removeCartClickOutsideListener();
+  if (typeof state.removeThanksClickOutsideListener === 'function') {
+    state.removeThanksClickOutsideListener();
   }
 
   // Закриття по кліку поза вікном попапа. Вішається слухач у момент відкриття попапу "подяки".
-    removeCartClickOutsideListener = enableModalCloseOnOutsideClick('thankYouModal', "#thankYouModalContent");
+  setRemoveThanksClickOutsideListener(
+    enableModalCloseOnOutsideClick('thankYouModal', "#thankYouModalContent")
+  );
 });
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". End
 
@@ -265,8 +275,8 @@ form.addEventListener("submit", (e) => {
 // Закриваємо модалку подяки
 document.getElementById("closeThankYou").addEventListener('click', () => {
   document.getElementById('thankYouModal').style.display = 'none';              // Закриоває модальне вікно подяки, змінюючи стиль display на none.
-  if (typeof removeCartClickOutsideListener === 'function') {
-    removeCartClickOutsideListener();
+  if (typeof state.removeThanksClickOutsideListener === 'function') {
+    state.removeThanksClickOutsideListener();
   }
 });
 
