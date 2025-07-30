@@ -1,4 +1,5 @@
 import { initApp } from './init-app.js';
+import { setCookie, getCookie } from './utils/cookie.js';
 
 // Для переключалки сайту на іншу мову
 const langSwitcher = document.getElementById("switchLang");
@@ -7,16 +8,6 @@ try {
    await initApp();
 } catch (error) {
    console.error("Помилка ініціалізації застосунку:", error);
-}
-
-// Функції для роботи з cookies
-function setCookie(name, value, maxAgeSeconds = 3153600000) {
-  document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; samesite=lax`;
-}
-
-export function getCookie(name) {
-  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
-  return match ? decodeURIComponent(match[2]) : null;
 }
 
 /* Перевірка мови браузера при першому заході (в куках немає параметра langDetected)

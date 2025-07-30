@@ -23,30 +23,30 @@ export function setRemoveThanksClickOutsideListener(listener) {
 export function enableModalCloseOnOutsideClick(wrapperId, contentSelector) {
   const wrapper = document.getElementById(wrapperId);
   const content = wrapper.querySelector(contentSelector);
-  console.log('enableModalCloseOnOutsideClick для:', wrapperId, wrapper);
+  // console.log('enableModalCloseOnOutsideClick для:', wrapperId, wrapper);
 
   const clickOutsideListener = function (e) {
-    console.log('Клік по:', e.target);
+    // console.log('Клік по:', e.target);
 
     if (!content.contains(e.target)) {
-      console.log('Клік поза попапом — закриваємо');
+      // console.log('Клік поза попапом — закриваємо');
       wrapper.style.display = 'none';
       window.removeEventListener('click', clickOutsideListener);
-      console.log('Слухач знятий');
-    } else {
+      // console.log('Слухач знятий');
+    } /* else {
       console.log('Клік всередині попапа — нічого не робимо');
-    }
+    } */
   };
 
   // Додаємо слухача через 0ms затримку, щоб не спрацьовував одразу після відкриття
   setTimeout(() => {
     window.addEventListener('click', clickOutsideListener);
-    console.log('Слухач доданий');
+    // console.log('Слухач доданий');
   }, 0);
 
   // Повертаємо функцію для ручного видалення слухача
   return () => {
     window.removeEventListener('click', clickOutsideListener);
-    console.log('Слухач знятий вручну');
+    // console.log('Слухач знятий вручну');
   };
 }

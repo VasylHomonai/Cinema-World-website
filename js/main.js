@@ -1,6 +1,7 @@
 import { updateCartState } from './cart.js';
 // import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
+import { isCookieClicked, getCookie } from './utils/cookie.js';
 import {
   getState,
   setRemoveBuyClickOutsideListener,
@@ -65,13 +66,7 @@ document.querySelectorAll('.buyNow').forEach(button => {
     const cookieKey = `cart_button_${id}`;
 
     // При завантаженні сторінки — перевіряємо збережений стан з cookie
-    const cookies = document.cookie.split(';');
-    const isClicked = cookies.some(cookie => {
-        const [key, value] = cookie.trim().split('=');
-        return key === cookieKey && value === 'clicked';
-    });
-
-    if (isClicked) {
+    if (isCookieClicked(cookieKey)) {
         button.classList.add('clicked');
     }
 
@@ -206,18 +201,6 @@ phoneInput.addEventListener("input", () => {
   phoneInput.value = PREFIX + digits;
   validateField(phoneInput, phoneError, isValidPhone, translations[currentLang].phoneInvalid);
 });
-
-// Функція для отримання cookie за ім'ям
-function getCookie(name) {
-  const cookies = document.cookie.split(';');
-  for (const cookie of cookies) {
-    const [key, value] = cookie.trim().split('=');
-    if (key === name) {
-      return value;
-    }
-  }
-  return null;
-}
 
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {

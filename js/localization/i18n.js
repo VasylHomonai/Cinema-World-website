@@ -1,4 +1,4 @@
-import { getCookie } from '../language-switcher.js';
+import { getCookie } from '../utils/cookie.js';
 
 let translations = {};
 let currentLang = getCookie("langDetected") || 'ua';

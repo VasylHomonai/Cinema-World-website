@@ -1,6 +1,6 @@
 import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
-import { getCookie } from './language-switcher.js';
+import { hasClickedItemsInCookies } from './utils/cookie.js';
 import {
   getState,
   setRemoveCartClickOutsideListener,
@@ -14,7 +14,6 @@ const cartButton = document.getElementById("cartButton");
 const cartImg = document.getElementById("cartImage");
 const cartTooltip = document.getElementById("cartTooltip");
 const cartCount = document.getElementById("cartCount");
-const lang = getCookie("langDetected");
 
 async function initCart() {
   try {
@@ -29,6 +28,9 @@ async function initCart() {
 }
 
 function handleCartClick() {
+  // ігноруємо клік, якщо немає товарів
+  if (!hasClickedItemsInCookies()) return;
+
   document.getElementById('cartPopupWrapper').style.display = 'flex';
 
   // Якщо вже був слухач для попапу — знімаємо
