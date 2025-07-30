@@ -1,11 +1,14 @@
 import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
 import { getCookie } from './language-switcher.js';
+import { enableModalCloseOnOutsideClick } from './modalCloser.js';
 
 const cartButton = document.getElementById("cartButton");
 const cartImg = document.getElementById("cartImage");
 const cartTooltip = document.getElementById("cartTooltip");
 const cartCount = document.getElementById("cartCount");
+const lang = getCookie("langDetected");
+let removeCartClickOutsideListener;
 
 async function initCart() {
   try {
@@ -20,8 +23,15 @@ async function initCart() {
 }
 
 function handleCartClick() {
-  const lang = getCookie("langDetected");
-  alert(lang === "ua" ? "🛒 Корзина в процесі розробки!" : "🛒 Cart under development!");
+  document.getElementById('cartPopupWrapper').style.display = 'flex';
+
+  // Якщо вже був слухач для попапу — знімаємо
+  if (typeof removeCartClickOutsideListener === 'function') {
+    removeCartClickOutsideListener();
+  }
+
+  // Закриття по кліку поза вікном попапа. Вішається слухач у момент відкриття попапу.
+  removeCartClickOutsideListener = enableModalCloseOnOutsideClick("cartPopupWrapper", "#cartPopup");
 }
 
 initCart();
@@ -54,3 +64,12 @@ export function updateCartState() {
        console.error("Помилка при оновленні стану кошика:", error);
   }
 }
+
+// Закриваємо попап корзини
+document.getElementById('closeCartPopup').addEventListener('click', () => {
+  document.getElementById('cartPopupWrapper').style.display = 'none';
+  if (typeof removeCartClickOutsideListener === 'function') {
+    removeCartClickOutsideListener();
+  }
+});
+

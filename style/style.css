@@ -20,7 +20,7 @@ footer a {
 }
 
 .background {
-    background-image: url('images/background.jpg');
+    background-image: url('../images/background.jpg');
     background-size: cover;                         /* Заповнити весь простір блоку */
     background-position: center;                    /* Центрувати */
     background-repeat: no-repeat;                   /* Не повторювати */
@@ -83,7 +83,7 @@ main {
 
 /* Зміна кольору кнопки "💸 Купити зараз" на зелений при кожному 2-му кліку */
 button.buyNow.clicked {
-  background-color: #4CAF50;     /* Зелений фон */
+  background-color: #4CAF50;                /* Зелений фон */
   border-color: #1e7e34;                    /* Зелена рамка */
 }
 
@@ -137,7 +137,7 @@ h4 {
   width: 78%;
   margin: 80px auto 20px auto;
   padding: 30px 0;
-  background-image: url('images/music_back.jpg');
+  background-image: url('../images/music_back.jpg');
   background-size: cover;
   background-position: center;
   background-color: #111;
@@ -156,7 +156,7 @@ h4 {
 }
 
 .player-bg {
-  background-image: url('images/music.webp');
+  background-image: url('../images/music.webp');
   background-size: cover;
   background-position: center;
   padding: 20px;

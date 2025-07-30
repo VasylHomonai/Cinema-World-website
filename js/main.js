@@ -1,6 +1,9 @@
 import { updateCartState } from './cart.js';
 // import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
+import { enableModalCloseOnOutsideClick } from './modalCloser.js';
+
+let removeCartClickOutsideListener;
 
 await initApp();
 
@@ -29,20 +32,22 @@ document.querySelectorAll('.buyNow').forEach(btn => {
 
     // Відкрити модалку
     document.getElementById('buyModal').style.display = 'flex';
+
+    // Якщо вже був слухач для попапу — знімаємо
+     if (typeof removeCartClickOutsideListener === 'function') {
+       removeCartClickOutsideListener();
+     }
+
+    // Закриття по кліку поза вікном попапа. Вішається слухач у момент відкриття попапу.
+    removeCartClickOutsideListener = enableModalCloseOnOutsideClick('buyModal', '#buyModalContent');
   });
 });
 
 // Закриваємо попап покупки
 document.getElementById('closeModal').addEventListener('click', () => {
   document.getElementById('buyModal').style.display = 'none';
-});
-
-// Закриття по кліку поза вікном для обох попапів
-window.addEventListener('click', (e) => {
-  if (e.target.id === 'buyModal') {
-    document.getElementById('buyModal').style.display = 'none';
-  } else if (e.target.id === 'thankYouModal') {
-    document.getElementById('thankYouModal').style.display = 'none';
+  if (typeof removeCartClickOutsideListener === 'function') {
+    removeCartClickOutsideListener();
   }
 });
 
@@ -245,6 +250,14 @@ form.addEventListener("submit", (e) => {
 
   // Показуємо подяку
   document.getElementById("thankYouModal").style.display = "flex";
+
+  // Якщо вже був слухач для попапу — знімаємо
+  if (typeof removeCartClickOutsideListener === 'function') {
+    removeCartClickOutsideListener();
+  }
+
+  // Закриття по кліку поза вікном попапа. Вішається слухач у момент відкриття попапу "подяки".
+    removeCartClickOutsideListener = enableModalCloseOnOutsideClick('thankYouModal', "#thankYouModalContent");
 });
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". End
 
@@ -252,6 +265,9 @@ form.addEventListener("submit", (e) => {
 // Закриваємо модалку подяки
 document.getElementById("closeThankYou").addEventListener('click', () => {
   document.getElementById('thankYouModal').style.display = 'none';              // Закриоває модальне вікно подяки, змінюючи стиль display на none.
+  if (typeof removeCartClickOutsideListener === 'function') {
+    removeCartClickOutsideListener();
+  }
 });
 
 // Для перекладу валідацій на різні мови. Початок

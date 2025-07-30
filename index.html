@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>КіноСвіт</title>
     <link rel="icon" type="image/x-icon" href="images/favicon.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet" href="style/cart.css">
 </head>
 <body>
     <header>
@@ -97,7 +98,7 @@
 
     <!-- Основне модальне вікно для кнопки "Купити зараз" -->
     <div class="modal" id="buyModal">
-      <div class="modal-content">
+      <div class="modal-content" id="buyModalContent">
         <span class="close-btn" id="closeModal">&times;</span>
         <h3>Покупка фільму</h3>
         <h4 id="movieTitle">Назва фільму</h4>
@@ -119,7 +120,7 @@
 
     <!-- Модалка подяки -->
     <div class="modal" id="thankYouModal" style="display: none;">
-      <div class="modal-content">
+      <div class="modal-content" id="thankYouModalContent">
         <span class="close-btn" id="closeThankYou">&times;</span>
         <h3>Дякуємо!</h3>
         <p>Для завершення покупки ми зв’яжемося з Вами!</p>
@@ -130,6 +131,37 @@
     <div id="videoModal">
       <iframe id="videoFrame" src="" allowfullscreen></iframe>
       <button id="closeVideo">&times;</button>
+    </div>
+
+    <!-- Попап корзини -->
+    <div id="cartPopupWrapper" class="popup-wrapper">
+        <div id="cartPopup" class="cart-popup">
+          <div class="cart-header">
+            <h2>Кошик</h2>
+            <button id="closeCartPopup" class="cart-close-btn">&times;</button>
+          </div>
+
+          <div class="cart-items-container">
+            <!-- Один товар (зразок) -->
+            <div class="cart-item">
+              <button class="remove-item-btn">&times;</button>
+              <img src="images/Ваяна 2.webp" alt="Товар" class="item-img" />
+              <span class="item-title">Масажер для шиї SKG 4356E white</span>
+              <div class="item-counter">
+                <button class="decrease">−</button>
+                <span class="quantity">3</span>
+                <button class="increase">+</button>
+              </div>
+              <span class="item-price">300 ₴</span>
+            </div>
+            <!-- Наступні cart-item будуть додаватися сюди -->
+          </div>
+
+          <div class="cart-footer">
+            <span class="total-price">Разом: <strong>300 ₴</strong></span>
+            <button class="checkout-btn">Оформити замовлення</button>
+          </div>
+        </div>
     </div>
 
 <script type="module" src="js/language-switcher.js" defer></script>
