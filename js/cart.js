@@ -1,6 +1,6 @@
 import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
-import { hasClickedItemsInCookies } from './utils/cookie.js';
+import { hasClickedItemsInCookies, setCookie, getCookie } from './utils/cookie.js';
 import {
   getState,
   setRemoveCartClickOutsideListener,
@@ -14,6 +14,10 @@ const cartButton = document.getElementById("cartButton");
 const cartImg = document.getElementById("cartImage");
 const cartTooltip = document.getElementById("cartTooltip");
 const cartCount = document.getElementById("cartCount");
+const decreaseBtn = document.getElementById('decrease');
+const increaseBtn = document.getElementById('increase');
+const quantityInput = document.getElementById('quantity');
+const cartItems = document.querySelectorAll('.cart-item');
 
 async function initCart() {
   try {
@@ -99,4 +103,60 @@ orderNow.addEventListener("click", () => {
   setRemoveBuyClickOutsideListener(
     enableModalCloseOnOutsideClick("buyModal", "#buyModalContent")
   );
+});
+
+// Початок роботи з кнопками decrease, increase та quantity в попапі корзини.
+// Ініціалізація кількості з куки або 1 за замовчуванням
+let quantity = parseInt(getCookie('cart_quantity')) || 1;
+quantityInput.value = quantity;
+
+// Заборона нечислових значень для поля к-сті.
+quantityInput.addEventListener('input', () => {
+  let val = quantityInput.value;
+  if (!/^\d+$/.test(val)) {
+    quantityInput.value = quantity;
+    return;
+  }
+
+  let num = parseInt(val);
+  if (num < 1) num = 1;
+  if (num > 10) num = 10;
+  quantity = num;
+  quantityInput.value = quantity;
+  setCookie('cart_quantity', quantity);
+  updateBorders();
+});
+
+// Стилізація бордера ітема якщо к-сть = 10
+function updateBorders() {
+  cartItems.forEach(item => {
+    if (quantity === 10) {
+      item.style.border = '1px solid #004466';
+      item.style.padding = '4px';
+    } else {
+      item.style.border = 'none';
+      item.style.borderBottom = '1px solid #eee';
+    }
+  });
+}
+
+// Початкове оновлення
+updateBorders();
+
+increaseBtn.addEventListener('click', () => {
+  if (quantity < 10) {
+    quantity++;
+    quantityInput.value = quantity;
+    setCookie('cart_quantity', quantity);
+    updateBorders();
+  }
+});
+
+decreaseBtn.addEventListener('click', () => {
+  if (quantity > 1) {
+    quantity--;
+    quantityInput.value = quantity;
+    setCookie('cart_quantity', quantity);
+    updateBorders();
+  }
 });

@@ -102,7 +102,20 @@
   border: 1px solid #ccc;
   background: none;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 1.1rem;
+  color: #004466;
+}
+
+.quantity {
+  text-align: center;
+  width: 35px;
+  height: 25px;
+  box-sizing: border-box;
+}
+
+.quantity:focus {
+  border: 1px solid #ff6600;
+  outline: none;
 }
 
 .item-price {
@@ -134,4 +147,16 @@
   font-size: 1rem;
   border-radius: 6px;
   cursor: pointer;
+}
+
+/* Заберає стрілки з імпутного цифрового поля для Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+/* Заберає стрілки з імпутного цифрового поля для: Chrome, Safari, Edge, Opera */
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }

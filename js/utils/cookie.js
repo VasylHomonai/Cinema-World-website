@@ -19,7 +19,7 @@ export function isCookieClicked(cookieKey) {
 }
 
 // Ф-ція встановлює cookie в браузері
-export function setCookie(name, value, maxAgeSeconds = 3153600000) {
+export function setCookie(name, value, maxAgeSeconds = 31536000) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; samesite=lax`;
 }
 
