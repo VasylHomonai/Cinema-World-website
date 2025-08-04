@@ -1,6 +1,7 @@
 import { initApp } from './init-app.js';
 import { setCookie, getCookie } from './utils/cookie.js';
 
+
 // Для переключалки сайту на іншу мову
 const langSwitcher = document.getElementById("switchLang");
 

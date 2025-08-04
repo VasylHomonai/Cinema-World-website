@@ -1,5 +1,14 @@
 {
   "_comment_cart": "Тексти для тултипу корзини",
   "cart.tooltip.empty": "Your cart is empty.",
-  "cart.tooltip.notempty": "Go to cart to\ncomplete your purchase."
+  "cart.tooltip.notempty": "Go to cart to\ncomplete your purchase.",
+  "_comment_button_Add_to_cart": "Текст для кнопки 'Купити' коли товар в корзині, або не в ній",
+  "in_cart_text": "\uD83D\uDCB8 Added to cart",
+  "buy_now_text": "\uD83D\uDCB8 Add to cart",
+  "_comment_total_price": "Текст для кнопки 'Разом' у попапі корзини",
+  "total_price": "Subtotal:",
+  "_comment_validateNameAndPhone": "Тексти для валідації полів Name та Phone",
+  "requiredFieldMessage": "This field is required.",
+  "nameOnlyLettersMessage": "Name must contain only letters.",
+  "phoneFormatMessage": "Format: +380XXXXXXXXX"
 }

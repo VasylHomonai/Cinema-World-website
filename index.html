@@ -42,7 +42,14 @@
                      <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=ejaQfRIFS_g">🎬 Переглянути трейлер</button>
                      <div class="buy-wrapper">
                         <div class="price">100 ₴</div>
-                        <button class="buyNow" data-id="button1">💸 Купити</button>
+                        <button
+                            class="buyNow"
+                            data-id="button1"
+                            data-title="Паддінгтон в Перу"
+                            data-price="100"
+                            data-image="images/Пригоди Паддінгтона в Перу.webp">
+                            💸 Купити
+                        </button>
                      </div>
                  </div>
              </div>
@@ -56,7 +63,14 @@
                      <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=sskQlhJjPU0">🎬 Переглянути трейлер</button>
                      <div class="buy-wrapper">
                         <div class="price">150 ₴</div>
-                        <button class="buyNow" data-id="button2">💸 Купити</button>
+                        <button
+                           class="buyNow"
+                           data-id="button2"
+                           data-title="Муфаса: Король Лев"
+                           data-price="150"
+                           data-image="images/Муфаса Король Лев.webp">
+                           💸 Купити
+                        </button>
                      </div>
                  </div>
              </div>
@@ -70,7 +84,14 @@
                      <button class="openVideo" data-video-id="https://www.youtube.com/watch?v=YJzkMqpw1_Y">🎬 Переглянути трейлер</button>
                      <div class="buy-wrapper">
                         <div class="price">100 ₴</div>
-                        <button class="buyNow" data-id="button3">💸 Купити</button>
+                        <button
+                            class="buyNow"
+                            data-id="button3"
+                            data-title="Ваяна 2"
+                            data-price="100"
+                            data-image="images/Ваяна 2.webp">
+                            💸 Купити
+                        </button>
                      </div>
                  </div>
              </div>
@@ -96,7 +117,7 @@
         <p>Контакти: <a href="mailto:info@kinosvit.ua">info@kinosvit.ua</a> | Тел.: <a href="tel:+380001234567">+38 (000) 123-45-67</a></p>
     </footer>
 
-    <!-- Основне модальне вікно для кнопки "Купити зараз" -->
+    <!-- Модальне вікно для "Чекаута" -->
     <div class="modal" id="buyModal">
       <div class="modal-content" id="buyModalContent">
         <span class="close-btn" id="closeModal">&times;</span>
@@ -141,20 +162,8 @@
             <button id="closeCartPopup" class="cart-close-btn">&times;</button>
           </div>
 
-          <div class="cart-items-container">
-            <!-- Один товар (зразок) -->
-            <div class="cart-item">
-              <button class="remove-item-btn">&times;</button>
-              <img src="images/Ваяна 2.webp" alt="Товар" class="item-img" />
-              <span class="item-title">Ваяна 2</span>
-              <div class="item-counter">
-                <button id="decrease" class="decrease">−</button>
-                <input id="quantity" class="quantity" type="number" min="1" max="10" value="1" />
-                <button id="increase" class="increase">+</button>
-              </div>
-              <span class="item-price">300 ₴</span>
-            </div>
-            <!-- Наступні cart-item будуть додаватися сюди -->
+          <div id="cartItemsContainer" class="cart-items-container">
+            <!-- JS додає динамічно cart-item сюди. Він їх і видаляє -->
           </div>
 
           <div class="cart-footer">
@@ -168,6 +177,5 @@
 <script type="module" src="js/main.js" defer></script>
 <script type="module" src="js/modal-video.js" defer></script>
 <script type="module" src="js/cart.js" defer></script>
-<script type="module" src="js/localization/i18n.js" defer></script>
 </body>
 </html>

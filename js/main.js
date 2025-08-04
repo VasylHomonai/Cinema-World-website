@@ -1,55 +1,78 @@
-import { updateCartState } from './cart.js';
-// import { t } from './localization/i18n.js';
+import { openCartPopup, objCartItems } from './cart.js';
+import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
-import { isCookieClicked, getCookie } from './utils/cookie.js';
-import {
-  getState,
-  setRemoveBuyClickOutsideListener,
-  setRemoveThanksClickOutsideListener,
-  enableModalCloseOnOutsideClick,
-} from './modalCloser.js';
+import { isCookieClicked, setDateCookie, getCookie, getDateCookie } from './utils/cookie.js';
+import { addToCart, removeCartItemById } from './utils/cart-item-controller.js';
+import { getState, setRemoveThanksClickOutsideListener, enableModalCloseOnOutsideClick } from './modalCloser.js';
+import { CartItem } from './utils/CartItem.js';
+
 
 // Доступ до об'єкту state в якій змінні: removeThanksClickOutsideListener та removeBuyClickOutsideListener:
 const state = getState();
+// Масив для збору "клікнутих" товарів
+const clickedItems = [];
+// Отримуємо форму модалки чекаута
+const form = document.getElementById("purchaseForm");
+// Отримуємо поля вводу для форми чекаута
+const nameInput = document.getElementById("userName");
+const phoneInput = document.getElementById("userPhone");
+const PREFIX = "+380";
+// Помилки для імпутних полів
+const nameError = document.getElementById("nameError");
+const phoneError = document.getElementById("phoneError");
 
 await initApp();
 
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.buyNow').forEach(btn => {
+  const id = `cart_${btn.dataset.id}`;
+  const objId = `quantity_${id}`;
+
+  const title = btn.dataset.title;
+  const price = parseFloat(btn.dataset.price);
+  const image = btn.dataset.image;
+
+  // При завантаженні(F5) сторінки — перевіряємо збережений стан з cookie
+  if (isCookieClicked(id)) {
+      const timestamp = getDateCookie(id);
+      // Отримуємо кількість із куки
+      const quantityFromCookie = getCookie(objId);
+
+      if (timestamp && quantityFromCookie !== null) {
+        const quantity = parseInt(quantityFromCookie);
+
+        clickedItems.push({ id, title, price, image, timestamp: Number(timestamp) });
+        btn.classList.add('clicked');
+        btn.textContent = t("in_cart_text");
+
+        // Створюємо об'єкт CartItem і додаємо в objCartItems
+        const item = new CartItem(objId, quantity, price);
+        objCartItems[objId] = item;
+      }
+  }
+
+  // Обробка кліку
   btn.addEventListener('click', (event) => {
-    // Знаходимо батьківський .image-item (блок з фільмом)
-    const imageItem = event.target.closest('.image-item');
-    if (!imageItem) return;
-    // Знаходимо назву фільму в цьому блоці
-    selectedMovieTitle = imageItem.querySelector('.title').textContent;
-    // Вставляємо назву в попап
-    document.getElementById('movieTitle').textContent = selectedMovieTitle;
-
-    // Очищення поля name (на пробіли) при кожному відкритті модалки
-    if (nameInput.value.trim() === "") {
-      nameInput.value = "";
-      nameInput.classList.remove("not-empty");
-      nameError.textContent = "";
+    // Якщо ще немає куки — встановлюємо її і додаємо клас
+    if (!isCookieClicked(id)) {
+        setDateCookie(id, "clicked")
+        btn.classList.add('clicked');
+        btn.textContent = t("in_cart_text");
+        // Додаємо товар в контейнер cartItemsContainer
+        addToCart(id, title, price, image);
     }
 
-    if (phoneInput.value.trim() === "") {
-      phoneInput.classList.remove("not-empty");
-      phoneError.textContent = "";
-    }
-
-    // Відкрити модалку
-    document.getElementById("buyModal").style.display = 'flex';
-
-    // Якщо вже був слухач для попапу — знімаємо
-     if (typeof state.removeBuyClickOutsideListener === 'function') {
-       state.removeBuyClickOutsideListener();
-     }
-
-    // Закриття по кліку поза вікном попапа. Вішається слухач у момент відкриття попапу.
-    setRemoveBuyClickOutsideListener(
-      enableModalCloseOnOutsideClick('buyModal', '#buyModalContent')
-    );
+    // Відкриваємо попап корзини незалежно від наявності куки
+    openCartPopup();
   });
+});
+
+/* Це для оновлення сторінки F5. Щоб товари в корзині були посортовані в тій послідовності якій додані.
+Сортування за часом (від найстарішого до найновішого) */
+clickedItems.sort((a, b) => a.timestamp - b.timestamp);
+// Відновлення DOM у правильному порядку
+clickedItems.forEach(item => {
+  addToCart(item.id, item.title, item.price, item.image);
 });
 
 // Закриваємо попап покупки
@@ -59,32 +82,6 @@ document.getElementById('closeModal').addEventListener('click', () => {
     state.removeBuyClickOutsideListener();
   }
 });
-
-// Зміна кольору кнопки "💸 Купити зараз" на зелений при кожному 2-му кліку
-document.querySelectorAll('.buyNow').forEach(button => {
-    const id = button.dataset.id;
-    const cookieKey = `cart_button_${id}`;
-
-    // При завантаженні сторінки — перевіряємо збережений стан з cookie
-    if (isCookieClicked(cookieKey)) {
-        button.classList.add('clicked');
-    }
-
-    // Обробка кліку
-    button.addEventListener('click', () => {
-        if (button.classList.contains('clicked')) {
-            button.classList.remove('clicked');
-            document.cookie = `${cookieKey}=; max-age=0; path=/;`;
-        } else {
-            button.classList.add('clicked');
-            document.cookie = `${cookieKey}=clicked; max-age=3153600000; path=/;`;
-        }
-
-        updateCartState(); // оновлюємо відображення кошика
-    });
-});
-// Клік кнопки "Купити зараз". Кінець
-
 
 // Реалізація лейб для імпутних полів імені та телефону у попапі "Покупка фільму"
 // Функція оновлює клас "not-empty" в залежності від вмісту
@@ -104,31 +101,16 @@ document.querySelectorAll(".form-group input").forEach(input => {
   input.addEventListener("blur", () => toggleLabel(input));
 });
 
-// При підтвердженні "Підтвердити покупку" — ховаємо форму і показуємо повідомлення подяки
-// Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". Start
-
-// Спочатку підготовка для запису в консоль та обробка пустих полів (на помилки)
-// Отримуємо форму
-const form = document.getElementById("purchaseForm");
-// Отримуємо поля вводу
-const nameInput = document.getElementById("userName");
-const phoneInput = document.getElementById("userPhone");
-const PREFIX = "+380";
-// Помилки для імпутних полів
-const nameError = document.getElementById("nameError");
-const phoneError = document.getElementById("phoneError");
-// перевірка відповідності регулярному виразу для заповнення поля імені
-const namePattern = /^[A-Za-zА-Яа-яІіЇїЄєҐґ'\- ]{1,20}$/;
-// Змінна для назви фільму який купляється
-let selectedMovieTitle = "";
-
-// Функція перевірки валідності номера
+/* При підтвердженні "Підтвердити покупку" — ховаємо форму і показуємо повідомлення подяки
+Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". Start
+Функція перевірки валідності номера */
 function isValidPhone(phone) {
   return /^\+380\d{9}$/.test(phone);
 }
 
-// Кастомна валідація поля імені в модалці покупки
+// Кастомна валідація поля імені в модалці чекаута
 function validateName(value) {
+  const namePattern = /^[A-Za-zА-Яа-яІіЇїЄєҐґ'\- ]{1,20}$/;   // перевірка для заповнення поля імені
   return namePattern.test(value);
 }
 
@@ -142,11 +124,17 @@ function resetPurchaseForm() {
   phoneError.textContent = "";
 }
 
+// При відкритті попапа "Чекаута" скидуються валідації полів імені та телефона до взаємодії з користувачем.
+export function resetPhoneNameError() {
+  nameError.textContent = "";
+  phoneError.textContent = "";
+}
+
 // Кастомна валідація полів
 function validateField(input, errorElement, validator = null, errorMessage = "") {
   const value = input.value.trim();
   if (value === "") {
-    errorElement.textContent = translations[currentLang].required;
+    errorElement.textContent = t("requiredFieldMessage");
     return false;
   }
 
@@ -161,8 +149,7 @@ function validateField(input, errorElement, validator = null, errorMessage = "")
 
 // Вішаємо слухачі на input поля
 nameInput.addEventListener("input", () => {
-//  validateField(nameInput, nameError, validateName, "Ім’я має містити лише літери.");
-  validateField(nameInput, nameError, validateName, translations[currentLang].nameInvalid);
+  validateField(nameInput, nameError, validateName, t("nameOnlyLettersMessage"));
 });
 
 phoneInput.addEventListener("focus", () => {
@@ -199,15 +186,16 @@ phoneInput.addEventListener("input", () => {
   const digits = value.slice(PREFIX.length).replace(/\D/g, "").slice(0, 9);
 
   phoneInput.value = PREFIX + digits;
-  validateField(phoneInput, phoneError, isValidPhone, translations[currentLang].phoneInvalid);
+  validateField(phoneInput, phoneError, isValidPhone, t("phoneFormatMessage"));
 });
 
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
-
-  const isNameValid = validateField(nameInput, nameError, validateName, translations[currentLang].nameInvalid);
-  const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, translations[currentLang].phoneInvalid);
+  // Змінна для назви фільму який купляється
+  let selectedMovieTitle = "";
+  const isNameValid = validateField(nameInput, nameError, validateName, t("nameOnlyLettersMessage"));
+  const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, t("phoneFormatMessage"));
 
   // Якщо хоча б одне поле невалідне — зупинити
   if (!isNameValid || !isPhoneValid) return;
@@ -216,22 +204,13 @@ form.addEventListener("submit", (e) => {
   console.log("Ім’я користувача:", nameInput.value.trim());
   console.log("Телефон:", phoneInput.value.trim());
   console.log("Фільм:", selectedMovieTitle.trim());
-
   // Очищаємо всі покупки (стан кнопок і Куки)
-  document.querySelectorAll(".buyNow").forEach(button => {
-    const id = button.dataset.id;
-    const cookieKey = `cart_button_${id}`;
-
-    // Якщо кнопка була у стані "clicked", очищаємо
-    if (getCookie(cookieKey) === 'clicked') {
-      button.classList.remove('clicked');
-      // Для видалення cookie ставимо max-age=0
-      document.cookie = `${cookieKey}=; max-age=0; path=/;`;
+  document.querySelectorAll('.buyNow').forEach(button => {
+    const id = `cart_${button.dataset.id}`;
+    if (getCookie(id) === 'clicked') {
+        removeCartItemById(id);
     }
   });
-
-  // Оновити корзину
-  updateCartState();
 
   // Очистка полів
   resetPurchaseForm();
@@ -254,7 +233,6 @@ form.addEventListener("submit", (e) => {
 });
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". End
 
-
 // Закриваємо модалку подяки
 document.getElementById("closeThankYou").addEventListener('click', () => {
   document.getElementById('thankYouModal').style.display = 'none';              // Закриоває модальне вікно подяки, змінюючи стиль display на none.
@@ -262,24 +240,3 @@ document.getElementById("closeThankYou").addEventListener('click', () => {
     state.removeThanksClickOutsideListener();
   }
 });
-
-// Для перекладу валідацій на різні мови. Початок
-const translations = {
-  ua: {
-    required: "Дане поле обов'язкове для заповнення.",
-    nameInvalid: "Ім’я має містити лише літери.",
-    phoneInvalid: "Номер має бути у форматі +380XXXXXXXXX",
-  },
-  en: {
-    required: "This field is required.",
-    nameInvalid: "Name must contain only letters.",
-    phoneInvalid: "Format: +380XXXXXXXXX",
-  }
-};
-
-let currentLang = document.getElementById("switchLang").value;
-
-document.getElementById("switchLang").addEventListener("change", (e) => {
-  currentLang = e.target.value;
-});
-// Для перекладу валідацій на різні мови. Кінець.
