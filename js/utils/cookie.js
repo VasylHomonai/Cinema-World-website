@@ -11,6 +11,7 @@ export function hasClickedItemsInCookies() {
     });
 }
 
+
 /* Провірка чи існує в document.cookie кука з конкретним ключем cookieKey і значенням 'clicked'.
 Якщо є повертає true, інакше false. */
 export function isCookieClicked(cookieKey) {
@@ -24,11 +25,13 @@ export function isCookieClicked(cookieKey) {
     });
 }
 
+
 /* Ф-ція встановлює cookie в браузері (або видаляє задаючи max-age=0)
 Загальна ф-ція додавання куки*/
 export function setCookie(name, value, maxAgeSeconds = 31536000) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=${maxAgeSeconds}; samesite=lax`;
 }
+
 
 /* Ф-ція встановлює cookie в браузері (або видаляє задаючи max-age=0). Для додавання товару в корзину
 Дана ф-ція задає значення куки з часом її створення, потрібно для збереження товарів в корзині в тій послідовності в
@@ -38,6 +41,7 @@ export function setDateCookie(name, value, maxAgeSeconds = 31536000) {
   const valueWithDate = `${value}|${timestamp}`;
   document.cookie = `${name}=${encodeURIComponent(valueWithDate)}; path=/; max-age=${maxAgeSeconds}; samesite=lax`;
 }
+
 
 /* Ф-ція шукає і повертає значення cookie за ключем name. Якщо не знаходить, повертає null
 Не залежно від того є в значенню куки дата або ні, отримує значення без дати */
@@ -52,6 +56,7 @@ export function getCookie(name) {
   }
   return null;
 }
+
 
 /* Ф-ція шукає і повертає час створення куки із значення cookie за ключем name. Якщо не знаходить, повертає null
 Тобто отримує час із значення куки після символу | (Приклад: clicked|1754062081381)

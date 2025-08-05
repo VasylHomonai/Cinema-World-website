@@ -21,7 +21,9 @@ const PREFIX = "+380";
 const nameError = document.getElementById("nameError");
 const phoneError = document.getElementById("phoneError");
 
+
 await initApp();
+
 
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.buyNow').forEach(btn => {
@@ -50,6 +52,7 @@ document.querySelectorAll('.buyNow').forEach(btn => {
       }
   }
 
+
   // Обробка кліку
   btn.addEventListener('click', (event) => {
     // Якщо ще немає куки — встановлюємо її і додаємо клас
@@ -66,6 +69,7 @@ document.querySelectorAll('.buyNow').forEach(btn => {
   });
 });
 
+
 /* Це для оновлення сторінки F5. Щоб товари в корзині були посортовані в тій послідовності якій додані.
 Сортування за часом (від найстарішого до найновішого) */
 clickedItems.sort((a, b) => a.timestamp - b.timestamp);
@@ -74,6 +78,7 @@ clickedItems.forEach(item => {
   addToCart(item.id, item.title, item.price, item.image);
 });
 
+
 // Закриваємо попап покупки
 document.getElementById('closeModal').addEventListener('click', () => {
   document.getElementById('buyModal').style.display = 'none';
@@ -81,6 +86,7 @@ document.getElementById('closeModal').addEventListener('click', () => {
     state.removeBuyClickOutsideListener();
   }
 });
+
 
 // Реалізація лейб для імпутних полів імені та телефону у попапі "Покупка фільму"
 // Функція оновлює клас "not-empty" в залежності від вмісту
@@ -92,6 +98,7 @@ function toggleLabel(input) {
   }
 }
 
+
 // Реалізація лейб для імпутних полів імені та телефону у попапі "Покупка фільму"
 // Підключення до кожного input
 document.querySelectorAll(".form-group input").forEach(input => {
@@ -100,6 +107,7 @@ document.querySelectorAll(".form-group input").forEach(input => {
   input.addEventListener("blur", () => toggleLabel(input));
 });
 
+
 /* При підтвердженні "Підтвердити покупку" — ховаємо форму і показуємо повідомлення подяки
 Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". Start
 Функція перевірки валідності номера */
@@ -107,11 +115,13 @@ function isValidPhone(phone) {
   return /^\+380\d{9}$/.test(phone);
 }
 
+
 // Кастомна валідація поля імені в модалці чекаута
 function validateName(value) {
   const namePattern = /^[A-Za-zА-Яа-яІіЇїЄєҐґ'\- ]{1,20}$/;   // перевірка для заповнення поля імені
   return namePattern.test(value);
 }
+
 
 // Ф-ція для очистки полів модалки чекаута.
 function resetPurchaseForm() {
@@ -123,11 +133,13 @@ function resetPurchaseForm() {
   phoneError.textContent = "";
 }
 
+
 // При відкритті попапа "Чекаута" скидуються валідації полів імені та телефона до взаємодії з користувачем.
 export function resetPhoneNameError() {
   nameError.textContent = "";
   phoneError.textContent = "";
 }
+
 
 // Кастомна валідація полів
 function validateField(input, errorElement, validator = null, errorMessage = "") {
@@ -188,6 +200,7 @@ phoneInput.addEventListener("input", () => {
   validateField(phoneInput, phoneError, isValidPhone, t("phoneFormatMessage"));
 });
 
+
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
@@ -230,6 +243,7 @@ form.addEventListener("submit", (e) => {
   );
 });
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". End
+
 
 // Закриваємо модалку подяки
 document.getElementById("closeThankYou").addEventListener('click', () => {

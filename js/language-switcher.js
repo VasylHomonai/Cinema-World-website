@@ -5,11 +5,13 @@ import { setCookie, getCookie } from './utils/cookie.js';
 // Для переключалки сайту на іншу мову
 const langSwitcher = document.getElementById("switchLang");
 
+
 try {
    await initApp();
 } catch (error) {
    console.error("Помилка ініціалізації застосунку:", error);
 }
+
 
 /* Перевірка мови браузера при першому заході (в куках немає параметра langDetected)
 Якщо параметр langDetected немає, то підгружається мова сайту відносно умови: 'uk' || 'ru' => 'ua' версія сайту
@@ -45,6 +47,7 @@ try {
       console.error("Помилка під час визначення мови:", error);
   }
 })();
+
 
 // Обробка зміни мови вручну
 if (langSwitcher) {

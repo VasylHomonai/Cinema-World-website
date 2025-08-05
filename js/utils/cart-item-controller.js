@@ -42,6 +42,7 @@ function createCartItemElement(id, title, price, imgSrc, quantity = 1) {
   return div;
 }
 
+
 // Додаємо товар по шаблону в контейнер cartItemsContainer:
 export function addToCart(id, title, price, image) {
   // Створюємо елемент
@@ -77,6 +78,7 @@ export function addToCart(id, title, price, image) {
   // Оновлюємо загальну суму корзини та позицій
   updateTotal();
 }
+
 
 // Функція для видалення товара з корзини. Видаляє куки та оновлення стану кнопки "Купити"
 export function removeCartItemById(id) {

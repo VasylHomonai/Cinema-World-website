@@ -13,9 +13,14 @@ import { resetPhoneNameError } from './main.js';
 
 // Створюємо порожній об'єкт для збереження екземплярів класу CartItem
 export const objCartItems = {};
-
 // Доступ до об'єкту state в якій змінні: removeCartClickOutsideListener та removeBuyClickOutsideListener:
 const state = getState();
+
+const orderNow = document.getElementById("orderNow");
+
+
+initCart();
+
 
 async function initCart() {
   const cartButton = document.getElementById("cartButton");
@@ -29,6 +34,16 @@ async function initCart() {
   cartButton.addEventListener("click", handleCartClick);
   updateCartState(); // Для F5 при пустій корзині.
 }
+
+
+function handleCartClick() {
+  // ігноруємо клік, якщо немає товарів
+  if (!hasClickedItemsInCookies()) return;
+
+  // Відкривається попап
+  openCartPopup()
+}
+
 
 // Функція відкриття попапа корзини
 export function openCartPopup() {
@@ -46,15 +61,6 @@ export function openCartPopup() {
     );
 }
 
-function handleCartClick() {
-  // ігноруємо клік, якщо немає товарів
-  if (!hasClickedItemsInCookies()) return;
-
-  // Відкривається попап
-  openCartPopup()
-}
-
-initCart();
 
 // Ф-ція для кошика. Відображення к-сті в ньому, зміна картинки при наявності товарів
 export function updateCartState() {
@@ -92,25 +98,6 @@ export function updateCartState() {
   }
 }
 
-// Обробка кнопки "Оформити замовлення"
-const orderNow = document.getElementById("orderNow");
-orderNow.addEventListener("click", () => {
-  // Закриваємо попап корзини
-  document.getElementById("cartPopupWrapper").style.display = "none";
-
-  // Скидуються валідації полів імені та телефона до взаємодії з користувачем.
-  resetPhoneNameError();
-  // Відкриваємо попап "Чекаута"
-  document.getElementById("buyModal").style.display = "flex";
-
-  // Додаємо слухача кліку поза попапом "Чекаута"
-  if (typeof state.removeBuyClickOutsideListener === "function") {
-    state.removeBuyClickOutsideListener();
-  }
-  setRemoveBuyClickOutsideListener(
-    enableModalCloseOnOutsideClick("buyModal", "#buyModalContent")
-  );
-});
 
 /* Початок роботи з кнопками decrease, increase та quantity в попапі корзини.
 Ініціалізація для всіх .cart-item   */
@@ -140,27 +127,8 @@ export function initializeQuantityControls(cartItem) {
   const item = new CartItem(id, title.textContent, quantity, price);
   objCartItems[id] = item;
 
-  // Функція для оновлення стилів. Стилізація бордера ітема якщо к-сть = 10
-  function updateBorders() {
-    const note = cartItem.querySelector('.cart-note');
-
-    if (quantity === 10) {
-      cartItem.classList.add('cart-item-border');
-
-       if (note) {
-         note.style.display = 'block';
-       }
-    } else {
-      cartItem.classList.remove('cart-item-border');
-
-      if (note) {
-        note.style.display = 'none';
-      }
-    }
-  }
-
   // Початкове оновлення
-  updateBorders();
+  updateBorders(cartItem, quantity);
 
   // Обробник input (вручну введене число). Заборона нечислових значень
   quantityInput.addEventListener('input', () => {
@@ -174,15 +142,7 @@ export function initializeQuantityControls(cartItem) {
     if (num < 1) num = 1;
     if (num > 10) num = 10;
     quantity = num;
-    quantityInput.value = quantity;
-    setCookie(id, quantity);
-    updateBorders();
-    // Оновлюємо стан корзини
-    updateCartState();
-    // Оновляємо суму по товару
-    priceElement.textContent = `${quantity * price} ₴`;
-    item.setQuantity(quantity);
-    updateTotal()
+    syncItemState(id, quantity, price, item, cartItem, quantityInput, priceElement);
   });
 
   // Обробник зменшення к-сті
@@ -190,15 +150,7 @@ export function initializeQuantityControls(cartItem) {
     e.stopPropagation();
     if (quantity > 1) {
       quantity--;
-      quantityInput.value = quantity;
-      setCookie(id, quantity);
-      updateBorders();
-      // Оновлюємо стан корзини
-      updateCartState();
-      // Оновляємо суму по товару
-      priceElement.textContent = `${quantity * price} ₴`;
-      item.setQuantity(quantity);
-      updateTotal()
+      syncItemState(id, quantity, price, item, cartItem, quantityInput, priceElement);
     }
   });
 
@@ -207,19 +159,46 @@ export function initializeQuantityControls(cartItem) {
     e.stopPropagation();
     if (quantity < 10) {
       quantity++;
-      quantityInput.value = quantity;
-      setCookie(id, quantity);
-      updateBorders();
-      // Оновлюємо стан корзини
-      updateCartState();
-      // Оновляємо суму по товару
-      priceElement.textContent = `${quantity * price} ₴`;
-      item.setQuantity(quantity);
-      updateTotal()
+      syncItemState(id, quantity, price, item, cartItem, quantityInput, priceElement);
     }
   });
 }
 // Кінець роботи з кнопками decrease, increase та quantity в попапі корзини.
+
+
+// Функція для оновлення стилів. Стилізація бордера ітема якщо к-сть = 10
+function updateBorders(cartItem, quantity) {
+  const note = cartItem.querySelector('.cart-note');
+
+  if (quantity === 10) {
+    cartItem.classList.add('cart-item-border');
+
+     if (note) {
+       note.style.display = 'block';
+     }
+  } else {
+    cartItem.classList.remove('cart-item-border');
+
+    if (note) {
+      note.style.display = 'none';
+    }
+  }
+}
+
+
+// Різні оновлення, які відбуваються при зміні к-сті на позиціях в корзині.
+function syncItemState(id, quantity, price, item, cartItem, quantityInput, priceElement) {
+  quantityInput.value = quantity;
+  setCookie(id, quantity);
+  updateBorders(cartItem, quantity);
+  // Оновлюємо стан корзини
+  updateCartState();
+  // Оновляємо суму по товару
+  priceElement.textContent = `${quantity * price} ₴`;
+  item.setQuantity(quantity);
+  updateTotal();
+}
+
 
 // Ф-ція для оновлення загальної суми корзини та суми кожної позицій які в ній
 export function updateTotal() {
@@ -244,6 +223,7 @@ export function updateTotal() {
   document.querySelector('.total-price').innerHTML = `${t("total_price")} <strong>${sum} ₴</strong>`;
 }
 
+
 // Ф-ція для передачі в консоль куплених товарів (кнопка "Підтвердити покупку")
 export function logPurchasedItems(objCartItems) {
   let count = 1;
@@ -266,10 +246,31 @@ export function logPurchasedItems(objCartItems) {
   console.log(`Загальна сума: ${grandTotal} ₴`);
 }
 
+
 // Закриваємо попап корзини
 document.getElementById('closeCartPopup').addEventListener('click', () => {
   document.getElementById('cartPopupWrapper').style.display = 'none';
   if (typeof state.removeCartClickOutsideListener === "function") {
     state.removeCartClickOutsideListener();
   }
+});
+
+
+// Обробка кнопки "Оформити замовлення"
+orderNow.addEventListener("click", () => {
+  // Закриваємо попап корзини
+  document.getElementById("cartPopupWrapper").style.display = "none";
+
+  // Скидуються валідації полів імені та телефона до взаємодії з користувачем.
+  resetPhoneNameError();
+  // Відкриваємо попап "Чекаута"
+  document.getElementById("buyModal").style.display = "flex";
+
+  // Додаємо слухача кліку поза попапом "Чекаута"
+  if (typeof state.removeBuyClickOutsideListener === "function") {
+    state.removeBuyClickOutsideListener();
+  }
+  setRemoveBuyClickOutsideListener(
+    enableModalCloseOnOutsideClick("buyModal", "#buyModalContent")
+  );
 });
