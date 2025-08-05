@@ -240,10 +240,6 @@ input[type=number]::-webkit-inner-spin-button {
     margin-left: 8px;
   }
 
-  .cart-item {
-    display: unset;
-  }
-
   .language-switcher {
     right: auto; /* або right: 0; або зовсім прибрати */
   }

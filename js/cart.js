@@ -128,7 +128,7 @@ export function initializeQuantityControls(cartItem) {
   objCartItems[id] = item;
 
   // Початкове оновлення
-  updateBorders(cartItem, quantity);
+  updateCartBorders(cartItem, quantity);
 
   // Обробник input (вручну введене число). Заборона нечислових значень
   quantityInput.addEventListener('input', () => {
@@ -167,8 +167,9 @@ export function initializeQuantityControls(cartItem) {
 
 
 // Функція для оновлення стилів. Стилізація бордера ітема якщо к-сть = 10
-function updateBorders(cartItem, quantity) {
+function updateCartBorders(cartItem, quantity) {
   const note = cartItem.querySelector('.cart-note');
+  const cartFooter = document.querySelector('.cart-footer');
 
   if (quantity === 10) {
     cartItem.classList.add('cart-item-border');
@@ -190,7 +191,7 @@ function updateBorders(cartItem, quantity) {
 function syncItemState(id, quantity, price, item, cartItem, quantityInput, priceElement) {
   quantityInput.value = quantity;
   setCookie(id, quantity);
-  updateBorders(cartItem, quantity);
+  updateCartBorders(cartItem, quantity);
   // Оновлюємо стан корзини
   updateCartState();
   // Оновляємо суму по товару

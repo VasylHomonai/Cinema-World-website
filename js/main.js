@@ -1,6 +1,6 @@
 import { openCartPopup, objCartItems, logPurchasedItems } from './cart.js';
 import { t } from './localization/i18n.js';
-import { initApp } from './init-app.js';
+import { initApp, setupFloatingLabels } from './init-app.js';
 import { isCookieClicked, setDateCookie, getCookie, getDateCookie } from './utils/cookie.js';
 import { addToCart, removeCartItemById } from './utils/cart-item-controller.js';
 import { getState, setRemoveThanksClickOutsideListener, enableModalCloseOnOutsideClick } from './modalCloser.js';
@@ -23,6 +23,7 @@ const phoneError = document.getElementById("phoneError");
 
 
 await initApp();
+setupFloatingLabels();
 
 
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
@@ -70,42 +71,19 @@ document.querySelectorAll('.buyNow').forEach(btn => {
 });
 
 
-/* Це для оновлення сторінки F5. Щоб товари в корзині були посортовані в тій послідовності якій додані.
+/* Ця ф-ція для відновлення товарів в корзині, щоб вони були посортовані в тій послідовності якій додані до F5
 Сортування за часом (від найстарішого до найновішого) */
-clickedItems.sort((a, b) => a.timestamp - b.timestamp);
-// Відновлення DOM у правильному порядку
-clickedItems.forEach(item => {
-  addToCart(item.id, item.title, item.price, item.image);
-});
-
-
-// Закриваємо попап покупки
-document.getElementById('closeModal').addEventListener('click', () => {
-  document.getElementById('buyModal').style.display = 'none';
-  if (typeof state.removeBuyClickOutsideListener === 'function') {
-    state.removeBuyClickOutsideListener();
-  }
-});
-
-
-// Реалізація лейб для імпутних полів імені та телефону у попапі "Покупка фільму"
-// Функція оновлює клас "not-empty" в залежності від вмісту
-function toggleLabel(input) {
-  if (input.value.trim() !== "") {
-    input.classList.add("not-empty");
-  } else {
-    input.classList.remove("not-empty");
-  }
+function restoreCartFromClickedItems(clickedItems) {
+    clickedItems.sort((a, b) => a.timestamp - b.timestamp);
+    // Відновлення DOM у правильному порядку
+    clickedItems.forEach(item => {
+        addToCart(item.id, item.title, item.price, item.image);
+    });
 }
 
 
-// Реалізація лейб для імпутних полів імені та телефону у попапі "Покупка фільму"
-// Підключення до кожного input
-document.querySelectorAll(".form-group input").forEach(input => {
-  input.addEventListener("focus", () => toggleLabel(input));
-  input.addEventListener("input", () => toggleLabel(input));
-  input.addEventListener("blur", () => toggleLabel(input));
-});
+// При оновленні сторінки додаємо товари по новому в корзину в тій послідовності якій були додані до F5
+restoreCartFromClickedItems(clickedItems);
 
 
 /* При підтвердженні "Підтвердити покупку" — ховаємо форму і показуємо повідомлення подяки
@@ -243,6 +221,15 @@ form.addEventListener("submit", (e) => {
   );
 });
 // Реалізація очистки імпутних полів імені та телефону у попапі "Покупка фільму" при кліку на "Підтвердити покупку". End
+
+
+// Закриваємо попап покупки
+document.getElementById('closeModal').addEventListener('click', () => {
+  document.getElementById('buyModal').style.display = 'none';
+  if (typeof state.removeBuyClickOutsideListener === 'function') {
+    state.removeBuyClickOutsideListener();
+  }
+});
 
 
 // Закриваємо модалку подяки
