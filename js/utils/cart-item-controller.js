@@ -71,7 +71,7 @@ export function addToCart(id, title, price, image) {
   const objId = `quantity_${id}`;
   let item = objCartItems[objId];
   if (!item) {
-    item = new CartItem(objId, 1, price);
+    item = new CartItem(objId, title, 1, price);
     objCartItems[objId] = item;
   }
   // Оновлюємо загальну суму корзини та позицій

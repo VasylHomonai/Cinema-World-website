@@ -1,4 +1,4 @@
-import { openCartPopup, objCartItems } from './cart.js';
+import { openCartPopup, objCartItems, logPurchasedItems } from './cart.js';
 import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
 import { isCookieClicked, setDateCookie, getCookie, getDateCookie } from './utils/cookie.js';
@@ -44,9 +44,8 @@ document.querySelectorAll('.buyNow').forEach(btn => {
         clickedItems.push({ id, title, price, image, timestamp: Number(timestamp) });
         btn.classList.add('clicked');
         btn.textContent = t("in_cart_text");
-
         // Створюємо об'єкт CartItem і додаємо в objCartItems
-        const item = new CartItem(objId, quantity, price);
+        const item = new CartItem(objId, title, quantity, price);
         objCartItems[objId] = item;
       }
   }
@@ -192,8 +191,6 @@ phoneInput.addEventListener("input", () => {
 // Обробка сабміту форми
 form.addEventListener("submit", (e) => {
   e.preventDefault(); // Щоб не перезавантажувалась сторінка
-  // Змінна для назви фільму який купляється
-  let selectedMovieTitle = "";
   const isNameValid = validateField(nameInput, nameError, validateName, t("nameOnlyLettersMessage"));
   const isPhoneValid = validateField(phoneInput, phoneError, isValidPhone, t("phoneFormatMessage"));
 
@@ -203,7 +200,8 @@ form.addEventListener("submit", (e) => {
   // Логування в консоль
   console.log("Ім’я користувача:", nameInput.value.trim());
   console.log("Телефон:", phoneInput.value.trim());
-  //console.log("Фільм:", selectedMovieTitle.trim());  Потрібно доробляти на вивід всіх ф-мів к-стів цін.
+  logPurchasedItems(objCartItems);
+
   // Очищаємо всі покупки (стан кнопок і Куки)
   document.querySelectorAll('.buyNow').forEach(button => {
     const id = `cart_${button.dataset.id}`;

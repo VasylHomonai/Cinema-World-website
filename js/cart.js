@@ -92,14 +92,6 @@ export function updateCartState() {
   }
 }
 
-// Закриваємо попап корзини
-document.getElementById('closeCartPopup').addEventListener('click', () => {
-  document.getElementById('cartPopupWrapper').style.display = 'none';
-  if (typeof state.removeCartClickOutsideListener === "function") {
-    state.removeCartClickOutsideListener();
-  }
-});
-
 // Обробка кнопки "Оформити замовлення"
 const orderNow = document.getElementById("orderNow");
 orderNow.addEventListener("click", () => {
@@ -123,12 +115,13 @@ orderNow.addEventListener("click", () => {
 /* Початок роботи з кнопками decrease, increase та quantity в попапі корзини.
 Ініціалізація для всіх .cart-item   */
 export function initializeQuantityControls(cartItem) {
+  const title = cartItem.querySelector('.item-title');
   const counter = cartItem.querySelector('.item-counter');
   const quantityInput = cartItem.querySelector('.quantity');
   const minusBtn = counter.querySelector('.decrease');
   const plusBtn = counter.querySelector('.increase');
   const priceElement = cartItem.querySelector('.item-price');
-  const price = parseFloat(priceElement.textContent); // 150
+  const price = parseFloat(priceElement.textContent);
 
   if (!counter || !quantityInput) return;
 
@@ -143,9 +136,8 @@ export function initializeQuantityControls(cartItem) {
   // Отримуємо кількість з куки або 1 за замовчуванням
   let quantity = parseInt(getCookie(id)) || 1;
   quantityInput.value = quantity;
-
   // Ініціалізуємо об'єкт
-  const item = new CartItem(id, quantity, price);
+  const item = new CartItem(id, title.textContent, quantity, price);
   objCartItems[id] = item;
 
   // Функція для оновлення стилів. Стилізація бордера ітема якщо к-сть = 10
@@ -251,3 +243,33 @@ export function updateTotal() {
   });
   document.querySelector('.total-price').innerHTML = `${t("total_price")} <strong>${sum} ₴</strong>`;
 }
+
+// Ф-ція для передачі в консоль куплених товарів (кнопка "Підтвердити покупку")
+export function logPurchasedItems(objCartItems) {
+  let count = 1;
+  let grandTotal = 0;
+  console.log("Куплені товари:");
+  for (const key in objCartItems) {
+    const item = objCartItems[key];
+
+    if (item.quantity > 0) {
+      const title = item.title;
+      const quantity = item.quantity;
+      const price = item.price;
+      const total = item.getTotal();
+      grandTotal += total;
+
+      console.log(`   ${count}) Фільм: ${title}, к-сть: ${quantity}, ціна: ${price} ₴, сума: ${total} ₴`);
+      count++;
+    }
+  }
+  console.log(`Загальна сума: ${grandTotal} ₴`);
+}
+
+// Закриваємо попап корзини
+document.getElementById('closeCartPopup').addEventListener('click', () => {
+  document.getElementById('cartPopupWrapper').style.display = 'none';
+  if (typeof state.removeCartClickOutsideListener === "function") {
+    state.removeCartClickOutsideListener();
+  }
+});
