@@ -14,13 +14,24 @@ function createCartItemElement(id, title, price, imgSrc, quantity = 1) {
     <button class="remove-item-btn">&times;</button>
     <img src="${imgSrc}" alt="${title}" class="item-img" />
     <span class="item-title">${title}</span>
-    <div class="item-counter">
-      <button class="decrease">−</button>
-      <input class="quantity" type="number" min="1" max="10" value="${quantity}" />
-      <button class="increase">+</button>
+    <div class="item-details">
+      <div class="item-counter">
+        <button class="decrease">−</button>
+        <input class="quantity" type="number" min="1" max="10" value="${quantity}" />
+        <button class="increase">+</button>
+      </div>
+      <div class="item-price">${price} ₴</div>
     </div>
-    <span class="item-price">${price} ₴</span>
   `;
+
+  // Окремо додаємо cart-note:
+  const note = document.createElement("div");
+  note.className = "cart-note";
+  note.style.display = "none";
+  note.textContent = t("maxQuantity");
+
+  div.appendChild(note);
+  cartItemsContainer.appendChild(div);
 
   // Додаємо data-id до блоку лічильника, це для куки к-сті товара в кошику.
   const counterDiv = div.querySelector(".item-counter");

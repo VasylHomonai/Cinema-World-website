@@ -10,5 +10,7 @@
   "_comment_validateNameAndPhone": "Тексти для валідації полів Name та Phone",
   "requiredFieldMessage": "This field is required.",
   "nameOnlyLettersMessage": "Name must contain only letters.",
-  "phoneFormatMessage": "Format: +380XXXXXXXXX"
+  "phoneFormatMessage": "Format: +380XXXXXXXXX",
+  "_comment_maxQuantity": "Текст для валідації перевищення допустимої к-сті товара в корзині",
+  "maxQuantity": "You can buy up to 10 of this item."
 }

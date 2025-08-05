@@ -114,7 +114,7 @@ function validateName(value) {
   return namePattern.test(value);
 }
 
-// Ф-ція для очистки полів модалки
+// Ф-ція для очистки полів модалки чекаута.
 function resetPurchaseForm() {
   nameInput.value = "";
   phoneInput.value = "";
@@ -203,7 +203,7 @@ form.addEventListener("submit", (e) => {
   // Логування в консоль
   console.log("Ім’я користувача:", nameInput.value.trim());
   console.log("Телефон:", phoneInput.value.trim());
-  console.log("Фільм:", selectedMovieTitle.trim());
+  //console.log("Фільм:", selectedMovieTitle.trim());  Потрібно доробляти на вивід всіх ф-мів к-стів цін.
   // Очищаємо всі покупки (стан кнопок і Куки)
   document.querySelectorAll('.buyNow').forEach(button => {
     const id = `cart_${button.dataset.id}`;

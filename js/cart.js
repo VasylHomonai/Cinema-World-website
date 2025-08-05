@@ -150,12 +150,20 @@ export function initializeQuantityControls(cartItem) {
 
   // Функція для оновлення стилів. Стилізація бордера ітема якщо к-сть = 10
   function updateBorders() {
+    const note = cartItem.querySelector('.cart-note');
+
     if (quantity === 10) {
-      cartItem.style.border = '1px solid #004466';
-      cartItem.style.padding = '4px';
+      cartItem.classList.add('cart-item-border');
+
+       if (note) {
+         note.style.display = 'block';
+       }
     } else {
-      cartItem.style.border = 'none';
-      cartItem.style.borderBottom = '1px solid #eee';
+      cartItem.classList.remove('cart-item-border');
+
+      if (note) {
+        note.style.display = 'none';
+      }
     }
   }
 
