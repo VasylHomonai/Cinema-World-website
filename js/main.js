@@ -1,6 +1,6 @@
 import { openCartPopup, objCartItems, logPurchasedItems } from './cart.js';
 import { t } from './localization/i18n.js';
-import { initApp, setupFloatingLabels } from './init-app.js';
+import { initApp } from './init-app.js';
 import { isCookieClicked, setDateCookie, getCookie, getDateCookie } from './utils/cookie.js';
 import { addToCart, removeCartItemById } from './utils/cart-item-controller.js';
 import { getState, setRemoveThanksClickOutsideListener, enableModalCloseOnOutsideClick } from './modalCloser.js';
@@ -10,7 +10,7 @@ import { CartItem } from './utils/CartItem.js';
 // Доступ до об'єкту state в якій змінні: removeThanksClickOutsideListener та removeBuyClickOutsideListener:
 const state = getState();
 // Масив для збору "клікнутих" товарів
-const clickedItems = [];
+export let clickedItems = [];
 // Отримуємо форму модалки чекаута
 const form = document.getElementById("purchaseForm");
 // Отримуємо поля вводу для форми чекаута
@@ -23,28 +23,26 @@ const phoneError = document.getElementById("phoneError");
 
 
 await initApp();
-setupFloatingLabels();
 
 
 // Відкриваємо попап покупки при кліку на будь-яку кнопку "Купити зараз". Початок.
 document.querySelectorAll('.buyNow').forEach(btn => {
-  const id = `cart_${btn.dataset.id}`;
-  const objId = `quantity_${id}`;
+  const idCartItem = `cart_${btn.dataset.id}`;
+  const objId = `quantity_${idCartItem}`;
 
   const title = btn.dataset.title;
   const price = parseFloat(btn.dataset.price);
   const image = btn.dataset.image;
 
   // При завантаженні(F5) сторінки — перевіряємо збережений стан з cookie
-  if (isCookieClicked(id)) {
-      const timestamp = getDateCookie(id);
+  if (isCookieClicked(idCartItem)) {
+      const timestamp = getDateCookie(idCartItem);
       // Отримуємо кількість із куки
       const quantityFromCookie = getCookie(objId);
 
       if (timestamp && quantityFromCookie !== null) {
         const quantity = parseInt(quantityFromCookie);
-
-        clickedItems.push({ id, title, price, image, timestamp: Number(timestamp) });
+        clickedItems.push({ idCartItem, title, price, image, timestamp: Number(timestamp) });
         btn.classList.add('clicked');
         btn.textContent = t("in_cart_text");
         // Створюємо об'єкт CartItem і додаємо в objCartItems
@@ -57,12 +55,12 @@ document.querySelectorAll('.buyNow').forEach(btn => {
   // Обробка кліку
   btn.addEventListener('click', (event) => {
     // Якщо ще немає куки — встановлюємо її і додаємо клас
-    if (!isCookieClicked(id)) {
-        setDateCookie(id, "clicked")
+    if (!isCookieClicked(idCartItem)) {
+        setDateCookie(idCartItem, "clicked")
         btn.classList.add('clicked');
         btn.textContent = t("in_cart_text");
         // Додаємо товар в контейнер cartItemsContainer
-        addToCart(id, title, price, image);
+        addToCart(idCartItem, title, price, image);
     }
 
     // Відкриваємо попап корзини незалежно від наявності куки
@@ -77,10 +75,14 @@ function restoreCartFromClickedItems(clickedItems) {
     clickedItems.sort((a, b) => a.timestamp - b.timestamp);
     // Відновлення DOM у правильному порядку
     clickedItems.forEach(item => {
-        addToCart(item.id, item.title, item.price, item.image);
+        addToCart(item.idCartItem, item.title, item.price, item.image);
     });
 }
 
+/* Ця ф-ція для сортування товарів в корзині, щоб вони були посортовані в тій послідовності якій додані */
+export function sortItemsByTimestamp(clickedItems) {
+    return clickedItems.sort((a, b) => a.timestamp - b.timestamp);
+}
 
 // При оновленні сторінки додаємо товари по новому в корзину в тій послідовності якій були додані до F5
 restoreCartFromClickedItems(clickedItems);
@@ -135,6 +137,36 @@ function validateField(input, errorElement, validator = null, errorMessage = "")
   errorElement.textContent = "";
   return true;
 }
+
+
+// Логіка оновлюється borderTop у Footer попапа корзини.
+export function updateCartFooterBorder() {
+  const cartFooter = document.querySelector('.cart-footer');
+  // Не застосовуємо правило для розширень менших 600px
+  const isSmallScreen = window.matchMedia('(max-width: 600px)').matches;
+  let quantity = null;
+  if (clickedItems && clickedItems.length > 0) {
+    sortItemsByTimestamp(clickedItems);
+    // Отримуємо останній товар із масиву clickedItems
+    const lastClickedItem = clickedItems[clickedItems.length - 1];
+    const id = `quantity_${lastClickedItem.idCartItem}`;
+    quantity = parseInt(getCookie(id));
+  } else {
+     return;
+  }
+
+  if (!isSmallScreen) {
+    if (quantity === 10) {
+      // Якщо в останнього товара к-сть = 10 — додаємо верхній бордер у футера
+      cartFooter.style.borderTop = '1px solid #eee';
+    } else {
+      cartFooter.style.borderTop = 'none';
+    }
+  } else {
+      cartFooter.style.borderTop = '1px solid #eee';
+  }
+}
+
 
 // Вішаємо слухачі на input поля
 nameInput.addEventListener("input", () => {

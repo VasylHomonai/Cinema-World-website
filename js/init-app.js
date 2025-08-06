@@ -3,6 +3,7 @@ import { loadTranslations } from './localization/i18n.js';
 
 export async function initApp() {
   await loadTranslations();     // завантаження перекладів
+  setupFloatingLabels();        // Початкові значення лейб імпутних полів на чекауті
 }
 
 
@@ -13,6 +14,9 @@ export function setupFloatingLabels() {
       input.addEventListener("focus", () => toggleLabel(input));
       input.addEventListener("input", () => toggleLabel(input));
       input.addEventListener("blur", () => toggleLabel(input));
+
+      // Перевіряємо стан інпуту на заповненість після завантаження сторінки
+      toggleLabel(input);
     });
 }
 

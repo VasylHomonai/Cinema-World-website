@@ -1,6 +1,6 @@
 import { t } from './localization/i18n.js';
 import { initApp } from './init-app.js';
-import { hasClickedItemsInCookies, setCookie, getCookie } from './utils/cookie.js';
+import { hasClickedItemsInCookies, setCookie, getCookie, getDateCookie } from './utils/cookie.js';
 import {
   getState,
   setRemoveCartClickOutsideListener,
@@ -8,7 +8,7 @@ import {
   enableModalCloseOnOutsideClick,
 } from './modalCloser.js';
 import { CartItem } from './utils/CartItem.js';
-import { resetPhoneNameError } from './main.js';
+import { resetPhoneNameError, updateCartFooterBorder, clickedItems } from './main.js';
 
 
 // Створюємо порожній об'єкт для збереження екземплярів класу CartItem
@@ -62,6 +62,17 @@ export function openCartPopup() {
 }
 
 
+// Зібрані ф-ції (задачі) які повинні виконуватись в різних місцях
+export function updateCartUI() {
+  // Оновлюємо стан корзини
+  updateCartState();
+  // Оновлюється borderTop у Footer попапа корзини.
+  updateCartFooterBorder();
+  // Оновлюємо загальну суму корзини та позицій
+  updateTotal();
+}
+
+
 // Ф-ція для кошика. Відображення к-сті в ньому, зміна картинки при наявності товарів
 export function updateCartState() {
   const cartImg = document.getElementById("cartImage");
@@ -102,13 +113,16 @@ export function updateCartState() {
 /* Початок роботи з кнопками decrease, increase та quantity в попапі корзини.
 Ініціалізація для всіх .cart-item   */
 export function initializeQuantityControls(cartItem) {
-  const title = cartItem.querySelector('.item-title');
+  const idCartItem = cartItem.dataset.id; // напр. 'cart_button2'
+  const title = cartItem.querySelector('.item-title')?.textContent.trim();
+  const image = cartItem.querySelector('.item-img').src;
   const counter = cartItem.querySelector('.item-counter');
   const quantityInput = cartItem.querySelector('.quantity');
   const minusBtn = counter.querySelector('.decrease');
   const plusBtn = counter.querySelector('.increase');
   const priceElement = cartItem.querySelector('.item-price');
   const price = parseFloat(priceElement.textContent);
+  const timestamp = getDateCookie(idCartItem);
 
   if (!counter || !quantityInput) return;
 
@@ -123,12 +137,24 @@ export function initializeQuantityControls(cartItem) {
   // Отримуємо кількість з куки або 1 за замовчуванням
   let quantity = parseInt(getCookie(id)) || 1;
   quantityInput.value = quantity;
-  // Ініціалізуємо об'єкт
-  const item = new CartItem(id, title.textContent, quantity, price);
-  objCartItems[id] = item;
+
+  // Додається об'єкт в objCartItems якщо його ще немає в ньому, або просто оновлюється к-сть.
+  let item
+  if (!objCartItems.hasOwnProperty(id)) {
+    item = new CartItem(id, title, quantity, price);
+    objCartItems[id] = item;
+  } else {
+    item = objCartItems[id];
+    item.setQuantity(quantity);
+  }
+
+  // Додаємо в масив clickedItems об'єкт при додаванні товара в корзину, якщо ще не додано
+  if (!clickedItems.some(item => item.idCartItem === idCartItem)) {
+    clickedItems.push({ idCartItem, title, price, image, timestamp: Number(timestamp) });
+  }
 
   // Початкове оновлення
-  updateCartBorders(cartItem, quantity);
+  updateCartItemBorder(cartItem, quantity);
 
   // Обробник input (вручну введене число). Заборона нечислових значень
   quantityInput.addEventListener('input', () => {
@@ -167,9 +193,8 @@ export function initializeQuantityControls(cartItem) {
 
 
 // Функція для оновлення стилів. Стилізація бордера ітема якщо к-сть = 10
-function updateCartBorders(cartItem, quantity) {
+export function updateCartItemBorder(cartItem, quantity) {
   const note = cartItem.querySelector('.cart-note');
-  const cartFooter = document.querySelector('.cart-footer');
 
   if (quantity === 10) {
     cartItem.classList.add('cart-item-border');
@@ -191,13 +216,14 @@ function updateCartBorders(cartItem, quantity) {
 function syncItemState(id, quantity, price, item, cartItem, quantityInput, priceElement) {
   quantityInput.value = quantity;
   setCookie(id, quantity);
-  updateCartBorders(cartItem, quantity);
-  // Оновлюємо стан корзини
-  updateCartState();
+  updateCartItemBorder(cartItem, quantity);
+
   // Оновляємо суму по товару
-  priceElement.textContent = `${quantity * price} ₴`;
   item.setQuantity(quantity);
-  updateTotal();
+  priceElement.textContent = `${item.getTotal()} ₴`;
+
+  // Оновлення: стан корзини, загальну суму корзини та позицій, borderTop у Footer попапа корзини.
+  updateCartUI();
 }
 
 

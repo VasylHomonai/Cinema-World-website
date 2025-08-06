@@ -1,7 +1,8 @@
 import { setCookie, getCookie } from './cookie.js';
-import { updateCartState, initializeQuantityControls, updateTotal, objCartItems } from '../cart.js';
+import { initializeQuantityControls, updateCartUI, objCartItems } from '../cart.js';
 import { t } from '../localization/i18n.js';
 import { CartItem } from './CartItem.js';
+import { sortItemsByTimestamp, clickedItems } from '../main.js';
 
 
 // Шаблон позиції cart-item для попапа корзини.
@@ -66,8 +67,6 @@ export function addToCart(id, title, price, image) {
     removeCartItemById(id);
   });
 
-  updateCartState(); // оновлюємо відображення кошика
-
   // "відновлюємо" об'єкт в objCartItems. Якщо об'єкт новий ставимо к-сть на 1
   const objId = `quantity_${id}`;
   let item = objCartItems[objId];
@@ -75,8 +74,9 @@ export function addToCart(id, title, price, image) {
     item = new CartItem(objId, title, 1, price);
     objCartItems[objId] = item;
   }
-  // Оновлюємо загальну суму корзини та позицій
-  updateTotal();
+
+  // Оновлення: стан корзини, загальну суму корзини та позицій, borderTop у Footer попапа корзини.
+  updateCartUI();
 }
 
 
@@ -84,7 +84,6 @@ export function addToCart(id, title, price, image) {
 export function removeCartItemById(id) {
   const cartItems = document.querySelectorAll(".cart-item");
   let itemFound = false;
-
   for (const cartItem of cartItems) {
     if (cartItem.dataset.id === id) {
       // Скидаємо стан кнопки "Купити зараз"
@@ -97,6 +96,14 @@ export function removeCartItemById(id) {
         button.textContent = t("buy_now_text");
       }
 
+      // Видаляємо з масива clickedItems об'єкт при видаленні товара з корзини
+      const index = clickedItems.findIndex(item => item.idCartItem === id);
+      if (index !== -1) {
+        clickedItems.splice(index, 1);
+      }
+      // Сортуємо масив clickedItems
+      sortItemsByTimestamp(clickedItems);
+
       // Видаляємо DOM-елемент товару з корзини
       cartItem.remove();
 
@@ -108,12 +115,11 @@ export function removeCartItemById(id) {
       const counterId = counter.dataset.id;
       setCookie(counterId, '', 0);
 
-      // Оновлюємо стан корзини
-      updateCartState();
-
       // Оновлюємо загальну суму корзини, не видаляючи об'єкт, а просто зануливши к-сть
       objCartItems[`quantity_${id}`].setQuantity(0);
-      updateTotal();
+
+      // Оновлення: стан корзини, загальну суму корзини та позицій, borderTop у Footer попапа корзини.
+      updateCartUI();
 
       itemFound = true;
       break;

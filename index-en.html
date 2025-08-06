@@ -125,12 +125,12 @@
         <h4 id="movieTitle">Contact information</h4>
         <form id="purchaseForm" novalidate>
             <div class="form-group">
-              <input type="text" id="userName" name="userName" placeholder="Enter your name" maxlength="20">
+              <input type="text" id="userName" name="userName" autocomplete="on" placeholder="Enter your name" maxlength="20">
               <label for="userName">Name</label>
               <small class="error-message" id="nameError"></small>
             </div>
             <div class="form-group">
-              <input type="tel" id="userPhone" name="userPhone" placeholder="tel: +380..." pattern="^\+380\d{9}$">
+              <input type="tel" id="userPhone" name="userPhone" autocomplete="on" placeholder="tel: +380..." pattern="^\+380\d{9}$">
               <label for="userPhone">Phone</label>
               <small class="error-message" id="phoneError">Format: +380XXXXXXXXX</small>
             </div>
